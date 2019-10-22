@@ -16,6 +16,9 @@ namespace GetLms
             //{
             //    Console.WriteLine(f);
             //}
+            var tbl = api.GetTable(" Divison 3 - Batley-Meek Memorial Trophy");
+            var summ = tbl.SummarizeFor("Roth").ToList();
+
             var club = api.GetClub("Rotherham", " Divison 3 - Batley-Meek Memorial Trophy", " Division 2 - Weston Trophy", "Sam Haystead Memorial Trophy (Richardson Plate)", "Richardson Cup");
 
             var now = DateTime.Now;

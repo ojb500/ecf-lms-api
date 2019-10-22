@@ -14,19 +14,19 @@ namespace LmsApi
             W = ja[2].Value<int>();
             D = ja[3].Value<int>();
             L = ja[4].Value<int>();
-            F = ja[5].Value<string>();
-            A = ja[6].Value<string>();
-            Pts = ja[7].Value<string>();
+            F = new Points(ja[5].Value<string>());
+            A = new Points(ja[6].Value<string>());
+            Pts = new Points(ja[7].Value<string>());
         }
-
+        
         public Team Team { get; }
         public int P { get; }
         public int W { get; }
         public int D { get; }
         public int L { get; }
-        public string F { get; }
-        public string A { get; }
-        public string Pts { get; }
+        public Points F { get; }
+        public Points A { get; }
+        public Points Pts { get; }
 
         internal class Converter : JsonConverter
         {
@@ -47,6 +47,10 @@ namespace LmsApi
             {
                 throw new NotImplementedException();
             }
+        }
+        public override string ToString()
+        {
+            return $"{Team.Abbreviated} (P{P} W{W} D{D} L{L} BD{F - A})";
         }
     }
 }
