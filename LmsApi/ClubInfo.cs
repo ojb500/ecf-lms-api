@@ -48,9 +48,12 @@ namespace LmsApi
 
             List<Event> recents = new List<Event>();
             var endOfRecents = future;
-            var firstRecent = Math.Max(0, endOfRecents - 5);
-            for (int i = firstRecent; i < endOfRecents; i++)
+            for (int i = endOfRecents - 1; i >= 0 && recents.Count < n; i--)
             {
+                if (fixt[i].Result == "0 - 0")
+                {
+                    continue;
+                }
                 recents.Add(fixt[i]);
             }
 
