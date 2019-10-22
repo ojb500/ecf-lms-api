@@ -41,7 +41,7 @@ namespace LmsApi
             }
 
             List<Event> upcoming = new List<Event>();
-            for (int i = future; i < fixt.Length && i < future + 5; i++)
+            for (int i = future; i < fixt.Length && i < future + n; i++)
             {
                 upcoming.Add(fixt[i]);
             }

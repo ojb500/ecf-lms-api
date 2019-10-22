@@ -18,9 +18,6 @@ namespace GetLms
             //}
             var club = api.GetClub("Rotherham", " Divison 3 - Batley-Meek Memorial Trophy", " Division 2 - Weston Trophy", "Sam Haystead Memorial Trophy (Richardson Plate)", "Richardson Cup");
 
-
-
-            int future = 0;
             var now = DateTime.Now;
             var (recents, upcoming) = club.GetRecent(now);
             Console.WriteLine("Upcoming matches:");
