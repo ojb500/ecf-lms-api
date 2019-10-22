@@ -7,7 +7,7 @@ namespace LmsApi
         public Event(Team home, string result, Team away, string matchLink, DateTime dt, string competition)
         {
             Home = home;
-            Result = result.Trim();
+            Result = new Score(result);
             Away = away;
             MatchLink = matchLink;
             DateTime = dt;
@@ -15,7 +15,7 @@ namespace LmsApi
         }
 
         public Team Home { get; }
-        public string Result { get; }
+        public Score Result { get; }
         public Team Away { get; }
         public string MatchLink { get; }
         public DateTime DateTime { get; }

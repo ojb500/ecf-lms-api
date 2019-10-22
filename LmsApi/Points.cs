@@ -8,6 +8,8 @@ namespace LmsApi
     [JsonConverter(typeof(Points.Converter))]
     public struct Points
     {
+        public int PointsX2 => _ptsx2;
+
         private class Converter : JsonConverter
         {
             public override bool CanConvert(Type objectType)
@@ -34,7 +36,7 @@ namespace LmsApi
             }
         }
 
-        private static bool TryParse(ReadOnlySpan<char> readOnlySpan, out Points points, out int charsConsumed)
+        public static bool TryParse(ReadOnlySpan<char> readOnlySpan, out Points points, out int charsConsumed)
         {
             int pts = 0;
             bool half = false;
@@ -54,22 +56,28 @@ namespace LmsApi
                     half = true;
                     break;
                 }
-                if (c >= '0' && c <= '9')
+                else if (c >= '0' && c <= '9')
                 {
                     any = true;
                     int v = c - '0';
                     pts = (pts * 10) + v;
                 }
+                else
+                {
+                    i--;
+                    break;
+                }
             }
 
 
-            charsConsumed = i;
             if (!any)
             {
+                charsConsumed = 0;
                 points = default;
                 return false;
             }
 
+            charsConsumed = i + 1;
             pts = pts * 2;
             if (half)
             {

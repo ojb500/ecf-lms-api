@@ -16,7 +16,7 @@ namespace LmsApi
             L = ja[4].Value<int>();
             F = new Points(ja[5].Value<string>());
             A = new Points(ja[6].Value<string>());
-            Pts = new Points(ja[7].Value<string>());
+            Pts = new Points(HtmlDeparse.StripTag(ja[7].Value<string>()));
         }
         
         public Team Team { get; }

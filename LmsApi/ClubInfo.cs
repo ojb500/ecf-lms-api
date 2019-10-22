@@ -50,7 +50,7 @@ namespace LmsApi
             var endOfRecents = future;
             for (int i = endOfRecents - 1; i >= 0 && recents.Count < n; i--)
             {
-                if (fixt[i].Result == "0 - 0")
+                if (fixt[i].Result.IsEmpty)
                 {
                     continue;
                 }
