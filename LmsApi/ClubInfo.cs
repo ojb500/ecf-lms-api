@@ -29,8 +29,8 @@ namespace LmsApi
 
         public Event[] Fixtures { get; }
 
-        public (List<Event> recent, List<Event> upcoming) GetRecent(int n = 5) => GetRecent(DateTime.Now, n);
-        public (List<Event> recent, List<Event> upcoming) GetRecent(DateTime dt, int n = 5)
+        public EventCollection GetRecent(int n = 5) => GetRecent(DateTime.Now, n);
+        public EventCollection GetRecent(DateTime dt, int n = 5)
         {
             var fixt = Fixtures;
             int future;
@@ -57,7 +57,7 @@ namespace LmsApi
                 recents.Add(fixt[i]);
             }
 
-            return (recents, upcoming);
+            return new EventCollection(recents, upcoming);
         }
 
 

@@ -1,12 +1,58 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace LmsApi
 {
-    public class LeagueTable : TableResult<LeagueTableEntry>
+    public interface ILeagueTable : IEnumerable<LeaguePosition>
     {
-        public IEnumerable<LeaguePosition> SummarizeFor(string clubPrefix, int maxRows = 5)
+        string Name { get; }
+    }
+
+    internal class LeagueTableList : ILeagueTable
+    {
+        public LeagueTableList(List<LeaguePosition> positions, string name)
+
+        {
+            Positions = positions;
+            Name = name;
+        }
+
+        private List<LeaguePosition> Positions { get; }
+        public string Name { get; }
+
+        public IEnumerator<LeaguePosition> GetEnumerator()
+        {
+            return Positions.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+    [JsonObjectAttribute]
+    public class LeagueTable : TableResult<LeagueTableEntry>, ILeagueTable
+    {
+        public string Name => Title;
+
+        public IEnumerator<LeaguePosition> GetEnumerator()
+        {
+            for (int i=0; i < Data.Length; i++)
+            {
+                yield return MakePosition(i);
+            }
+        }
+
+        public ILeagueTable SummarizeFor(string clubPrefix, int maxRows = 5, string name = null)
+        {
+            var list = SummarizeForInternal(clubPrefix, maxRows).ToList();
+            return new LeagueTableList(list, name ?? Name);
+        }
+
+        private IEnumerable<LeaguePosition> SummarizeForInternal(string clubPrefix, int maxRows = 5)
         {
             int total = Data.Length;
             if (total == 0)
@@ -56,6 +102,11 @@ namespace LmsApi
                     yield return MakePosition(i);
                 }
             }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
 
         private LeaguePosition MakePosition(int n) => new LeaguePosition(n + 1, Data[n]);

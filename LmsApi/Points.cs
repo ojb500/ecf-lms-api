@@ -103,7 +103,7 @@ namespace LmsApi
             bool half = (_ptsx2 & 1) != 0;
             int pts = _ptsx2 >> 1;
             if (half)
-                return $"{pts}½";
+                return pts == 0 ? "½" : $"{pts}½";
             return pts.ToString();
         }
 
