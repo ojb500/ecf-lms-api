@@ -24,10 +24,9 @@ steps:
   displayName: "dotnet pack"
   inputs:
     command: 'pack'
-    arguments: '--configuration $(buildConfiguration)'
     packagesToPack: 'LmsApi/LmsApi.csproj'
     nobuild: true
-    versioningScheme: 'off'
+    versioningScheme: 'byBuildNumber'
 
 # The last task is a nuget command, nuget push
 # This will push any .nupkg files to the 'TestFeed' artifact feed
