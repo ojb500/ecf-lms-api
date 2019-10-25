@@ -26,7 +26,7 @@ steps:
     command: 'pack'
     packagesToPack: 'LmsApi/LmsApi.csproj'
     nobuild: true
-    versioningScheme: 'byBuildNumber'
+    versioningScheme: byPrereleaseNumber
 
 # The last task is a nuget command, nuget push
 # This will push any .nupkg files to the 'TestFeed' artifact feed
