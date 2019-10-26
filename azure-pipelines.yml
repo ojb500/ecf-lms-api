@@ -18,18 +18,15 @@ steps:
   inputs:
     command: 'build'
     arguments: '--configuration $(buildConfiguration)'
-    projects: 'LmsApi/LmsApi.csproj'
+    projects: 'LmsApi/Ojb500.EcfLms.csproj'
 
 - task: DotNetCoreCLI@2
   displayName: "dotnet pack"
   inputs:
     command: 'pack'
-    packagesToPack: 'LmsApi/LmsApi.csproj'
+    packagesToPack: 'LmsApi/Ojb500.EcfLms.csproj'
     nobuild: true
     versioningScheme: 'byPrereleaseNumber'
-    majorVersion: '1'
-    minorVersion: '0'
-    patchVersion: '0'
 
 # The last task is a nuget command, nuget push
 # This will push any .nupkg files to the 'TestFeed' artifact feed
