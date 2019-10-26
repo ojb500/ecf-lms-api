@@ -9,7 +9,10 @@ namespace Ojb500.EcfLms
     [JsonObject]
     public class LeagueTable : ApiResult<LeagueTableEntry>, ILeagueTable
     {
-        public string Name => Title;
+        public string Name => Competition?.Name ?? Title;
+
+        [JsonIgnore]
+        internal Competition Competition { get; set; }
 
         public IEnumerator<LeaguePosition> GetEnumerator()
         {

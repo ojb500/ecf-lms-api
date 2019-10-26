@@ -17,8 +17,8 @@ namespace GetLms
             var api = Api.Default.GetOrganisation(28757);
             //var fixt = api.GetMatches(" Division 2 - Weston Trophy");
 
-      
-            var d3 = api.GetMatches(Div3).ToList();
+
+            var d3 = api.GetCompetition(Div3);
 
             var club = api.GetClub("Rotherham", Div3, Div2, Plate, Cup);
 

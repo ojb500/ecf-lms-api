@@ -30,15 +30,12 @@ namespace Ojb500.EcfLms
             _api = api;
             _org = orgId.ToString();
         }
-
-        public LeagueTable GetTable(string competition) => GetCompetition(competition).GetTable();
-
+        
         internal LeagueTable GetTableInternal(string competition)
         {
             return _api.GetOne<LeagueTable>("table", _org, competition);
         }
 
-        public IEnumerable<MatchCard> GetMatches(string competition) => GetCompetition(competition).GetMatches();
         internal IEnumerable<MatchCard> GetMatchesInternal(string competition)
         {
             var s = _api.Get<ApiResult<Pairing>>("match", _org, competition);
@@ -51,7 +48,6 @@ namespace Ojb500.EcfLms
             }
         }
 
-        public IEnumerable<Event> GetEvents(string competition) => GetCompetition(competition).GetEvents();
         internal IEnumerable<Event> GetEventsInternal(string competition)
         {
             var s = _api.GetOne<ApiResult<Event>>("event", _org, competition);

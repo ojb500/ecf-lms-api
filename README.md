@@ -17,11 +17,13 @@ Package: `Ojb500.EcfLms`
 using Ojb500.EcfLms;
 
 var sheffieldChess = Api.Default.GetOrganisation(28757);
-string division2 = " Division 2 - Weston Trophy"; // Competition name needs to match the one on the ECF LMS site exactly, including leading/trailing whitespace...
-string division3 = " Divison 3 - Batley-Meek Memorial Trophy"; // ..and any mis-spellings
-var table = sheffieldChess.GetTable(division2);
+var division2 = sheffieldChess.GetCompetition(" Division 2 - Weston Trophy"); 
+// Competition name needs to match the one on the ECF LMS site exactly, including leading/trailing whitespace...
+var division3 = sheffieldChess.GetCompetition(" Divison 3 - Batley-Meek Memorial Trophy"); // ..and any mis-spellings
 
-var club = sheffieldChess.GetClub("Rotherham", division2, division3); // Pass all competitions you care about
+var table = division2.GetTable();
+
+var club = new ClubInfo("Rotherham", division2, division3); // Pass all competitions you care about
 foreach (var fixture in club.GetUpcoming().Take(5))
 {
   Console.WriteLine(fixture);

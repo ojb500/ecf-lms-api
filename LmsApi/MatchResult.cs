@@ -14,7 +14,7 @@ namespace Ojb500.EcfLms
             this.mc = mc;
         }
 
-        public Pairing[] Pairings => mc.Pairings;
+        public Pairing[] Pairings => mc?.Pairings ?? Array.Empty<Pairing>();
 
         public Team Away => evt.Away;
 
