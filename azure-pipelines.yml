@@ -27,6 +27,9 @@ steps:
     packagesToPack: 'LmsApi/Ojb500.EcfLms.csproj'
     nobuild: true
     versioningScheme: 'byPrereleaseNumber'
+    majorVersion: '0'
+    minorVersion: '1'
+    patchVersion: '0'
 
 # The last task is a nuget command, nuget push
 # This will push any .nupkg files to the 'TestFeed' artifact feed
