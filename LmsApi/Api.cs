@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace Ojb500.EcfLms
 {
@@ -30,11 +31,13 @@ namespace Ojb500.EcfLms
             _js.Converters.Add(new LeagueTableEntryApiConverter());
             _js.Converters.Add(new PointsApiConverter());
             _js.Converters.Add(new EventApiConverter());
+            _js.Converters.Add(new PairingApiConverter());
         }
 
 
         private async Task<Stream> GetJson(string file, string org, string name)
         {
+            Trace.WriteLine($"Requesting {file} with org={org}, name='{name}'");
             var result = await _hc.PostAsync(file, new FormUrlEncodedContent(new KeyValuePair<string, string>[]
                 {
                 new KeyValuePair<string, string>("org", org),

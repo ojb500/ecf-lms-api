@@ -6,7 +6,7 @@ namespace Ojb500.EcfLms.Json
 {
     internal static class HtmlDeparse
     {
-        private static Regex link = new Regex(@"<a href=""([^""]+)"">([^<]+)</a>");
+        private static Regex link = new Regex(@"(?:<a href=""([^""]+)"">)?([^<]+)(?:</a>)?");
         private static Regex tag = new Regex(@"<[^>]+>([^<]+)</[^>]+>");
 
         public static string StripTag(JToken token) => StripTag(token.Value<string>());

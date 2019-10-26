@@ -9,17 +9,18 @@ namespace Ojb500.EcfLms
     {
         private Organisation _org;
         private string _prefix;
-        private string[] _comps;
+        private Competition[] _comps;
 
         internal ClubInfo(Organisation org, string teamPrefix, params string[] competitions)
         {
             _org = org;
             _prefix = teamPrefix;
-            _comps = competitions;
+            _comps = competitions
+                .Select(s => _org.GetCompetition(s))
+                .ToArray();
             Predicate<string> pred = s => s.StartsWith(teamPrefix);
 
-            Events = competitions
-                .Select(s => _org.GetCompetition(s))
+            Events = _comps
                 .SelectMany(c => c.GetEvents())
                 .Where(e => pred(e.Home.Name)
                 || pred(e.Away.Name))
@@ -29,21 +30,26 @@ namespace Ojb500.EcfLms
 
         public Event[] Events { get; }
 
-        public IEnumerable<Event> GetRecent() => GetRecent(DateTime.Now);
-        public IEnumerable<Event> GetRecent(DateTime dt)
+        public IEnumerable<IEvent> GetRecent() => GetRecent(DateTime.Now);
+        public IEnumerable<IEvent> GetRecent(DateTime dt)
         {
             return Events.TakeWhile(e => e.DateTime <= dt).Reverse();
         }
 
-        public IEnumerable<Event> GetResults() => GetResults(DateTime.Now);
-        public IEnumerable<Event> GetResults(DateTime dt)
+        public IEnumerable<IMatchResult> GetResults() => GetResults(DateTime.Now);
+        public IEnumerable<IMatchResult> GetResults(DateTime dt)
         {
-            return GetRecent().Where(e => !e.Result.IsEmpty);
+            foreach (var evt in GetRecent().Where(e => !e.Result.IsEmpty))
+            {
+                var comp = _org.GetCompetition(evt.Competition);
+                var mc = comp.GetMatchCard(evt);
+                yield return new MatchResult(evt, mc);
+            }
         }
 
 
-        public IEnumerable<Event> GetUpcoming() => GetUpcoming(DateTime.Now);
-        public IEnumerable<Event> GetUpcoming(DateTime dt)
+        public IEnumerable<IEvent> GetUpcoming() => GetUpcoming(DateTime.Now);
+        public IEnumerable<IEvent> GetUpcoming(DateTime dt)
         {
             return Events.SkipWhile(e => e.DateTime <= dt);
         }

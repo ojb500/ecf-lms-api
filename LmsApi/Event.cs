@@ -2,7 +2,7 @@
 
 namespace Ojb500.EcfLms
 {
-    public partial class Event
+    public class Event : IEvent
     {
         public Event(Team home, string result, Team away, string matchLink, DateTime dt, string competition)
         {

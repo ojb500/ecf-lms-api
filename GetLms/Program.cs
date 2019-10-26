@@ -7,19 +7,20 @@ namespace GetLms
 {
     class Program
     {
+        private const string Div3 = " Divison 3 - Batley-Meek Memorial Trophy";
+        private const string Div2 = " Division 2 - Weston Trophy";
+        private const string Plate = "Sam Haystead Memorial Trophy (Richardson Plate)";
+        private const string Cup = "Richardson Cup";
+
         static void Main(string[] args)
         {
             var api = Api.Default.GetOrganisation(28757);
             //var fixt = api.GetMatches(" Division 2 - Weston Trophy");
 
-            //foreach (var f in fixt)
-            //{
-            //    Console.WriteLine(f);
-            //}
-            var tbl = api.GetTable(" Divison 3 - Batley-Meek Memorial Trophy");
-            var summ = tbl.SummarizeFor("Roth");
+      
+            var d3 = api.GetMatches(Div3).ToList();
 
-            var club = api.GetClub("Rotherham", " Divison 3 - Batley-Meek Memorial Trophy", " Division 2 - Weston Trophy", "Sam Haystead Memorial Trophy (Richardson Plate)", "Richardson Cup");
+            var club = api.GetClub("Rotherham", Div3, Div2, Plate, Cup);
 
             var now = DateTime.Now;
             var (recents, upcoming) = (club.GetResults(now).Take(5), club.GetUpcoming(now).Take(5));

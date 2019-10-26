@@ -4,7 +4,7 @@ using System;
 
 namespace Ojb500.EcfLms.Json
 {
-    public partial class LeagueTableEntryApiConverter : JsonConverter
+    public class LeagueTableEntryApiConverter : JsonConverter
     {
         public override bool CanConvert(Type objectType)
         {
