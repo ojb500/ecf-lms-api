@@ -41,7 +41,7 @@ namespace Ojb500.EcfLms
         {
             foreach (var evt in GetRecent().Where(e => !e.Result.IsEmpty))
             {
-                var comp = _org.GetCompetition(evt.Competition);
+                var comp = evt.Competition;
                 var mc = comp.GetMatchCard(evt);
                 yield return new MatchResult(evt, mc);
             }

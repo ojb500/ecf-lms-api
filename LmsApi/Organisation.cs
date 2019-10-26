@@ -50,10 +50,6 @@ namespace Ojb500.EcfLms
         internal IEnumerable<Event> GetEventsInternal(string competition)
         {
             var s = _api.GetOne<ApiResult<Event>>("event", _org, competition);
-            foreach (var e in s.Data)
-            {
-                e.Competition = competition;
-            }
             return s.Data;
         }
     }

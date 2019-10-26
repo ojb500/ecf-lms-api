@@ -18,7 +18,7 @@ namespace Ojb500.EcfLms
 
         public Team Away => evt.Away;
 
-        public string Competition => evt.Competition;
+        public Competition Competition => evt.Competition;
 
         public DateTime DateTime => evt.DateTime;
 
