@@ -3,20 +3,15 @@ using System.Text.RegularExpressions;
 
 namespace Ojb500.EcfLms
 {
-    public enum GameResultKind
-    {
-        Unplayed, // 0-0
-        LeftWin, // 1-0
-        Draw, // 1/2-1/2
-        RightWin, // 0-1
-    }
-
     public readonly struct GameResult
     {
-        private readonly GameResultKind _result;
+        public Result Result => _result;
+        public bool WasDefaulted => _byDefault;
+
+        private readonly Result _result;
         private readonly bool _byDefault;
 
-        public GameResult(GameResultKind result, bool byDefault = false)
+        public GameResult(Result result, bool byDefault = false)
         {
             _result = result;
             _byDefault = byDefault;
@@ -26,9 +21,9 @@ namespace Ojb500.EcfLms
             string result;
             switch (_result)
             {
-                case GameResultKind.LeftWin: result = "1–0"; break;
-                case GameResultKind.RightWin: result = "0–1"; break;
-                case GameResultKind.Draw: result = "½–½"; break;
+                case Result.LeftWin: result = "1–0"; break;
+                case Result.RightWin: result = "0–1"; break;
+                case Result.Draw: result = "½–½"; break;
                 default: result = "0–0"; break;
             }
             if (!_byDefault)
@@ -53,19 +48,19 @@ namespace Ojb500.EcfLms
             }
 
             bool isDefault = v.Contains("def");
-            GameResultKind grk;
+            Result grk;
             switch (match[0].Value)
             {
-                case "1": grk = GameResultKind.LeftWin; break;
-                case "½": grk = GameResultKind.Draw; break;
+                case "1": grk = Result.LeftWin; break;
+                case "½": grk = Result.Draw; break;
                 case "0":
                     if (match[1].Value == "1")
                     {
-                        grk = GameResultKind.RightWin;
+                        grk = Result.RightWin;
                     }
                     else
                     {
-                        grk = GameResultKind.Unplayed;
+                        grk = Result.Unplayed;
                     }
                     break;
                 default:
