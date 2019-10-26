@@ -7,17 +7,20 @@ namespace Ojb500.EcfLms
 {
     public class ClubInfo
     {
-        private Organisation _org;
-        private string _prefix;
         private Competition[] _comps;
 
         internal ClubInfo(Organisation org, string teamPrefix, params string[] competitions)
+            :this(teamPrefix, competitions
+                .Select(s => org.GetCompetition(s))
+                .ToArray())
         {
-            _org = org;
-            _prefix = teamPrefix;
-            _comps = competitions
-                .Select(s => _org.GetCompetition(s))
-                .ToArray();
+            
+        }
+
+        public ClubInfo(string teamPrefix, params Competition[] competitions)
+        {
+            _comps = competitions;
+
             Predicate<string> pred = s => s.StartsWith(teamPrefix);
 
             Events = _comps

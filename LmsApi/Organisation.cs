@@ -20,6 +20,11 @@ namespace Ojb500.EcfLms
         {
             return new ClubInfo(this, name, competitions);
         }
+        public ClubInfo GetClub(string name, params Competition[] competitions)
+        {
+            return new ClubInfo(name, competitions);
+        }
+
         public Organisation(IApi api, int orgId)
         {
             _api = api;
