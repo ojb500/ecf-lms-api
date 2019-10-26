@@ -3,23 +3,23 @@ using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 
-namespace LmsApi
+namespace Ojb500.EcfLms
 {
     public class ClubInfo
     {
-        private Api _api;
+        private Organisation _org;
         private string _prefix;
         private string[] _comps;
 
-        internal ClubInfo(Api api, string teamPrefix, params string[] competitions)
+        internal ClubInfo(Organisation org, string teamPrefix, params string[] competitions)
         {
-            _api = api;
+            _org = org;
             _prefix = teamPrefix;
             _comps = competitions;
             Predicate<string> pred = s => s.StartsWith(teamPrefix);
 
-            Fixtures = competitions
-                .Select(s => _api.GetCompetition(s))
+            Events = competitions
+                .Select(s => _org.GetCompetition(s))
                 .SelectMany(c => c.GetEvents())
                 .Where(e => pred(e.Home.Name)
                 || pred(e.Away.Name))
@@ -27,39 +27,26 @@ namespace LmsApi
                 .ToArray();
         }
 
-        public Event[] Fixtures { get; }
+        public Event[] Events { get; }
 
-        public EventCollection GetRecent(int n = 5) => GetRecent(DateTime.Now, n);
-        public EventCollection GetRecent(DateTime dt, int n = 5)
+        public IEnumerable<Event> GetRecent() => GetRecent(DateTime.Now);
+        public IEnumerable<Event> GetRecent(DateTime dt)
         {
-            var fixt = Fixtures;
-            int future;
-            for (future = 0; future < fixt.Length; future++)
-            {
-                if (fixt[future].DateTime > dt)
-                    break;
-            }
-
-            List<Event> upcoming = new List<Event>();
-            for (int i = future; i < fixt.Length && i < future + n; i++)
-            {
-                upcoming.Add(fixt[i]);
-            }
-
-            List<Event> recents = new List<Event>();
-            var endOfRecents = future;
-            for (int i = endOfRecents - 1; i >= 0 && recents.Count < n; i--)
-            {
-                if (fixt[i].Result.IsEmpty)
-                {
-                    continue;
-                }
-                recents.Add(fixt[i]);
-            }
-
-            return new EventCollection(recents, upcoming);
+            return Events.TakeWhile(e => e.DateTime <= dt).Reverse();
         }
 
+        public IEnumerable<Event> GetResults() => GetResults(DateTime.Now);
+        public IEnumerable<Event> GetResults(DateTime dt)
+        {
+            return GetRecent().Where(e => !e.Result.IsEmpty);
+        }
+
+
+        public IEnumerable<Event> GetUpcoming() => GetUpcoming(DateTime.Now);
+        public IEnumerable<Event> GetUpcoming(DateTime dt)
+        {
+            return Events.SkipWhile(e => e.DateTime <= dt);
+        }
 
     }
 }

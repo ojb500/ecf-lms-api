@@ -1,40 +1,12 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace LmsApi
+namespace Ojb500.EcfLms
 {
-    [JsonConverter(typeof(Points.Converter))]
-    public struct Points
+    public partial struct Points
     {
         public int PointsX2 => _ptsx2;
-
-        private class Converter : JsonConverter
-        {
-            public override bool CanConvert(Type objectType)
-            {
-                return objectType == typeof(Points);
-            }
-
-            public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-            {
-                var s = reader.ReadAsString();
-                s = HtmlDeparse.StripTag(s);
-                bool result = Points.TryParse(s.AsSpan(), out var pts, out _);
-
-                if (!result)
-                {
-                    return null;
-                }
-                return pts;
-            }
-
-            public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-            {
-                throw new NotImplementedException();
-            }
-        }
 
         public static bool TryParse(ReadOnlySpan<char> readOnlySpan, out Points points, out int charsConsumed)
         {

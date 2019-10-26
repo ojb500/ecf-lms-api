@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.28803.352
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LmsApi", "LmsApi\LmsApi.csproj", "{5F0172E4-8EDC-462B-9A5D-EF42B9484D09}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ojb500.EcfLms", "LmsApi\Ojb500.EcfLms.csproj", "{5F0172E4-8EDC-462B-9A5D-EF42B9484D09}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetLms", "GetLms\GetLms.csproj", "{2449FAC8-0D1D-4E0D-AC47-9AF209584282}"
 EndProject

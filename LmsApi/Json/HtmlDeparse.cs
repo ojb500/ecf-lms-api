@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace LmsApi
+namespace Ojb500.EcfLms.Json
 {
     internal static class HtmlDeparse
     {

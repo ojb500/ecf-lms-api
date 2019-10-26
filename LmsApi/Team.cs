@@ -1,15 +1,22 @@
 ﻿using System.Linq;
 
-namespace LmsApi
+namespace Ojb500.EcfLms
 {
-    public struct Team
+    public readonly struct Team
     {
-        public string Name { get; set; }
-        public string Url { get; set; }
+        public string Name { get;}
+        public string Url { get; }
 
-        public Team(string s)
+
+        public Team(string name, string url)
         {
-            (Url, Name) = HtmlDeparse.DeparseLink(s);
+            Name = name;
+            Url = url;
+        }
+        public static Team Parse(string s)
+        {
+            var (url, name) = Json.HtmlDeparse.DeparseLink(s);
+            return new Team(name, url);
         }
 
         public override string ToString() => Abbreviated;

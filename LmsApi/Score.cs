@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace LmsApi
+namespace Ojb500.EcfLms
 {
     public readonly struct Score
     { 

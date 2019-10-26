@@ -4,37 +4,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace LmsApi
+namespace Ojb500.EcfLms
 {
-    public interface ILeagueTable : IEnumerable<LeaguePosition>
-    {
-        string Name { get; }
-    }
-
-    internal class LeagueTableList : ILeagueTable
-    {
-        public LeagueTableList(List<LeaguePosition> positions, string name)
-
-        {
-            Positions = positions;
-            Name = name;
-        }
-
-        private List<LeaguePosition> Positions { get; }
-        public string Name { get; }
-
-        public IEnumerator<LeaguePosition> GetEnumerator()
-        {
-            return Positions.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
-    [JsonObjectAttribute]
-    public class LeagueTable : TableResult<LeagueTableEntry>, ILeagueTable
+    [JsonObject]
+    public class LeagueTable : ApiResult<LeagueTableEntry>, ILeagueTable
     {
         public string Name => Title;
 
@@ -110,17 +83,6 @@ namespace LmsApi
         }
 
         private LeaguePosition MakePosition(int n) => new LeaguePosition(n + 1, Data[n]);
-    }
-
-    public struct LeaguePosition
-    {
-        internal LeaguePosition(int pos, LeagueTableEntry entry)
-        {
-            Position = pos;
-            Entry = entry;
-        }
-        public int Position { get; }
-        public LeagueTableEntry Entry { get; }
     }
 
 }

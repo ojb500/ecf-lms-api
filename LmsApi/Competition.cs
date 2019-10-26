@@ -1,13 +1,13 @@
 ﻿using System.Collections.Generic;
 
-namespace LmsApi
+namespace Ojb500.EcfLms
 {
     public class Competition
     {
-        private readonly Api _api;
+        private readonly Organisation _api;
         private readonly string _name;
 
-        internal Competition(Api api, string name)
+        internal Competition(Organisation api, string name)
         {
             _api = api;
             _name = name;

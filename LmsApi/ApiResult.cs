@@ -1,6 +1,6 @@
-﻿namespace LmsApi
+﻿namespace Ojb500.EcfLms
 {
-    public class TableResult<T>
+    public class ApiResult<T>
     {
         public T[] Data { get; set; }
         public string[] Header { get; set; }
