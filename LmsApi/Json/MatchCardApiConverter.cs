@@ -16,8 +16,8 @@ namespace Ojb500.EcfLms.Json
             var ja = JArray.ReadFrom(reader);
 
             return new Pairing(ja[1].Value<int>(), ja[0].Value<string>() == "W",
-            new Player(ja[2].Value<string>(), ja[3].Value<string>()),
-            new Player(ja[5].Value<string>(), ja[6].Value<string>()),
+            new Player(ja[2].Value<string>(), new Grade(ja[3].Value<string>())),
+            new Player(ja[5].Value<string>(), new Grade(ja[6].Value<string>())),
             GameResult.Parse(ja[4].Value<string>()));
         }
 

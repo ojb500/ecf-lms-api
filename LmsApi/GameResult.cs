@@ -11,10 +11,10 @@ namespace Ojb500.EcfLms
         private readonly Result _result;
         private readonly bool _byDefault;
 
-        public GameResult(Result result, bool byDefault = false)
+        public GameResult(Result result, bool wasDefaulted = false)
         {
             _result = result;
-            _byDefault = byDefault;
+            _byDefault = wasDefaulted;
         }
         public override string ToString()
         {

@@ -4,10 +4,17 @@ using System.Text;
 
 namespace Ojb500.EcfLms
 {
-    public readonly struct Grade
+    public struct Grade
     {
-        private readonly ushort _grade;
-        private readonly char _category;
+        private ushort _grade;
+        private char _category;
+
+
+        public Grade(int value, char category)
+        {
+            _grade = (ushort)value;
+            _category = category;
+        }
 
         public Grade(string value)
         {
@@ -33,14 +40,11 @@ namespace Ojb500.EcfLms
             return $"{_grade}{_category}";
         }
 
-        public int Value => _grade;
-        public char Category => _category;
+        public int Value { get => _grade; set => _grade = (ushort)value; }
+        public char Category { get => _category; set => _category = value; }
     }
     public struct Player
     {
-        public Player(string name, string grade) : this(name, new Grade(grade))
-        { }
-
         public Player(string name, Grade grade)
         {
             var lastFirst = name.Split(new char[] { ',' } , StringSplitOptions.RemoveEmptyEntries);
@@ -71,10 +75,9 @@ namespace Ojb500.EcfLms
             FamilyName = familyName;
             Grade = grade;
         }
-        public Grade Grade { get; }
-        public string GivenName { get; }
-        public string FamilyName { get; }
-
+        public string GivenName { get; set; }
+        public string FamilyName { get; set; }
+        public Grade Grade { get; set; }
         public override string ToString()
         {
             if (FamilyName == null)

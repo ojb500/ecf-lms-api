@@ -4,7 +4,11 @@ namespace Ojb500.EcfLms
 {
     public class MatchCard
     {
-        public MatchCard(Team left, Team right, DateTime date, Pairing[] pairings)
+        public MatchCard()
+        {
+
+        }
+        internal MatchCard(Team left, Team right, DateTime date, Pairing[] pairings)
         {
             Left = left;
             Right = right;

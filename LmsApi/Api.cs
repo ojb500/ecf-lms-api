@@ -56,6 +56,14 @@ namespace Ojb500.EcfLms
 
         private void UpdateInternal(IModel remote, string org, string comp, Action<string> log, bool getTables)
         {
+            var localCards = GetMatchCards(org, comp);
+            var cards = remote.GetMatchCards(org, comp).ToArray();
+            if (localCards != null && localCards.Data.Length > cards.Length)
+            {
+                throw new InvalidDataException("Cards went missing");
+            }
+            PutMatchCards(org, comp, cards);
+
             var localEvents = GetEvents(org, comp);
             var events = remote.GetEvents(org, comp).ToArray();
 
@@ -64,14 +72,6 @@ namespace Ojb500.EcfLms
                 throw new InvalidDataException("Events went missing");
             }
             PutEvents(org, comp, events);
-
-            var cards = remote.GetMatchCards(org, comp).ToArray();
-            var localCards = GetMatchCards(org, comp);
-            if (localCards != null && localCards.Data.Length > events.Length)
-            {
-                throw new InvalidDataException("Cards went missing");
-            }
-            PutMatchCards(org, comp, cards);
 
             if (getTables)
             {

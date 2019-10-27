@@ -1,8 +1,15 @@
-﻿namespace Ojb500.EcfLms
+﻿using Newtonsoft.Json;
+
+namespace Ojb500.EcfLms
 {
+    [JsonObject]
     public class Pairing
     {
-        public Pairing(int board, bool firstPlayerWhite, Player firstPlayer, Player secondPlayer, GameResult result)
+        public Pairing()
+        {
+
+        }
+        internal Pairing(int board, bool firstPlayerWhite, Player firstPlayer, Player secondPlayer, GameResult result)
         {
             Board = board;
             FirstPlayerWhite = firstPlayerWhite;

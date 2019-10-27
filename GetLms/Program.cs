@@ -16,7 +16,7 @@ namespace GetLms
         {
 
             var a = new FileApi(".\\2019.1");
-            a.Update(Api.Default, 28757, getTables: true, Div2, Div3);
+            //a.Update(Api.Default, 28757, getTables: true, Div2, Div3);
             a.Update(Api.Default, 28757, getTables: false, Cup, Plate);
 
 
