@@ -25,7 +25,6 @@ namespace Ojb500.EcfLms
         private static JsonSerializer CreateSerializer()
         {
             var js = JsonSerializer.CreateDefault();
-            js.Formatting = Formatting.Indented;
             return js;
         }
                
