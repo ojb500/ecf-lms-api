@@ -10,14 +10,14 @@
             SecondPlayer = secondPlayer;
             Result = result;
         }
-        public int Board { get; }
-        public bool FirstPlayerWhite { get; }
+        public int Board { get; set; }
+        public bool FirstPlayerWhite { get; set; }
 
-        public Player FirstPlayer { get; }
+        public Player FirstPlayer { get; set; }
 
-        public Player SecondPlayer { get; }
+        public Player SecondPlayer { get; set; }
 
-        public GameResult Result { get; }
+        public GameResult Result { get; set; }
 
         public override string ToString()
         {

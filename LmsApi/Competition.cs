@@ -6,7 +6,7 @@ namespace Ojb500.EcfLms
 {
     public class Competition
     {
-        private readonly Organisation _api;
+        private readonly Organisation _org;
         public string InternalName { get; }
         private string _friendlyName;
 
@@ -18,7 +18,7 @@ namespace Ojb500.EcfLms
         }
         internal Competition(Organisation api, string name)
         {
-            _api = api;
+            _org = api;
             InternalName = name;
         }
 
@@ -29,7 +29,7 @@ namespace Ojb500.EcfLms
         public IEnumerable<Event> GetEvents() {
             if (_events == null)
             {
-                _events = _api.GetEventsInternal(InternalName).ToList();
+                _events = _org.GetEventsInternal(InternalName).ToList();
                 foreach (var ev in _events)
                 {
                     ev.Competition = this;
@@ -39,7 +39,7 @@ namespace Ojb500.EcfLms
         }
 
         
-        public IEnumerable<MatchCard> GetMatches() => _matches ?? (_matches = _api.GetMatchesInternal(InternalName).ToList());
+        public IEnumerable<MatchCard> GetMatches() => _matches ?? (_matches = _org.GetMatchesInternal(InternalName).ToList());
         public LeagueTable GetTable()
         {
             if (_table != null)
@@ -47,7 +47,7 @@ namespace Ojb500.EcfLms
                 return _table;
             }
 
-            _table = _api.GetTableInternal(InternalName);
+            _table = _org.GetTableInternal(InternalName);
             _table.Competition = this;
             return _table;
         }

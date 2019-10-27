@@ -1,11 +1,12 @@
-﻿using System.Linq;
+﻿using Newtonsoft.Json;
+using System.Linq;
 
 namespace Ojb500.EcfLms
 {
-    public readonly struct Team
+    public struct Team
     {
-        public string Name { get;}
-        public string Url { get; }
+        public string Name { get; set; }
+        public string Url { get; set; }
 
 
         public Team(string name, string url)
@@ -16,11 +17,12 @@ namespace Ojb500.EcfLms
         public static Team Parse(string s)
         {
             var (url, name) = Json.HtmlDeparse.DeparseLink(s);
-            return new Team(name, url);
+            return new Team(name, string.IsNullOrEmpty(url) ? null : url);
         }
 
         public override string ToString() => Abbreviated;
 
+        [JsonIgnore]
         public string Abbreviated
         {
             get

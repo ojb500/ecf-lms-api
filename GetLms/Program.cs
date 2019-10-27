@@ -14,11 +14,18 @@ namespace GetLms
 
         static void Main(string[] args)
         {
-            var api = Api.Default.GetOrganisation(28757);
+
+            var a = new FileApi(".\\2019.1");
+            a.Update(Api.Default, 28757, getTables: true, Div2, Div3);
+            a.Update(Api.Default, 28757, getTables: false, Cup, Plate);
+
+
+            // var a = Api.Default;
+            var api = a.GetOrganisation(28757);
             //var fixt = api.GetMatches(" Division 2 - Weston Trophy");
 
 
-            var d3 = api.GetCompetition(Div3);
+            var d3 = api.GetCompetition(Div2);
 
             var club = api.GetClub("Rotherham", Div3, Div2, Plate, Cup);
 

@@ -12,10 +12,10 @@ namespace Ojb500.EcfLms
             Pairings = pairings;
         }
 
-        public Team Left { get; }
-        public Team Right { get; }
-        public DateTime Date { get; }
-        public Pairing[] Pairings { get; }
+        public Team Left { get; set; }
+        public Team Right { get; set; }
+        public DateTime Date { get; set; }
+        public Pairing[] Pairings { get; set; }
 
     }
 }

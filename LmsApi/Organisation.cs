@@ -5,9 +5,14 @@ namespace Ojb500.EcfLms
 {
     public class Organisation
     {
-        private readonly IApi _api;
+        private readonly IModel _api;
         private readonly string _org;
         private readonly Dictionary<string, Competition> _competitions = new Dictionary<string, Competition>();
+
+        internal IModel Model => _api;
+        internal string Name => _org;
+
+
         public Competition GetCompetition(string name)
         {
             if (! _competitions.TryGetValue(name, out var comp))
@@ -25,33 +30,25 @@ namespace Ojb500.EcfLms
             return new ClubInfo(name, competitions);
         }
 
-        public Organisation(IApi api, int orgId)
+        public Organisation(IModel api, int orgId)
         {
             _api = api;
             _org = orgId.ToString();
         }
-        
-        internal LeagueTable GetTableInternal(string competition)
+
+        internal IEnumerable<MatchCard> GetMatchesInternal(string internalName)
         {
-            return _api.GetOne<LeagueTable>("table", _org, competition);
+            return _api.GetMatchCards(_org, internalName);
         }
 
-        internal IEnumerable<MatchCard> GetMatchesInternal(string competition)
+        internal IEnumerable<Event> GetEventsInternal(string internalName)
         {
-            var s = _api.Get<ApiResult<Pairing>>("match", _org, competition);
-            foreach (var m in s)
-            {
-                var mc = new MatchCard(Team.Parse(m.Header[2]), Team.Parse(m.Header[5]),
-                    DateTime.Parse(m.Header[4]),
-                    m.Data);
-                yield return mc;
-            }
+            return _api.GetEvents(_org, internalName);
         }
 
-        internal IEnumerable<Event> GetEventsInternal(string competition)
+        internal LeagueTable GetTableInternal(string internalName)
         {
-            var s = _api.GetOne<ApiResult<Event>>("event", _org, competition);
-            return s.Data;
+            return _api.GetTable(_org, internalName);
         }
     }
 }

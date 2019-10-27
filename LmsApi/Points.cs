@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Ojb500.EcfLms
 {
-    public partial struct Points
+    public struct Points
     {
-        public int PointsX2 => _ptsx2;
+        public int PointsX2 { get; set; }
 
         public static bool TryParse(ReadOnlySpan<char> readOnlySpan, out Points points, out int charsConsumed)
         {
@@ -59,28 +60,28 @@ namespace Ojb500.EcfLms
             return true;
         }
 
-        private readonly int _ptsx2;
-
         public Points(string pts)
         {
             var result = Points.TryParse(pts.AsSpan(), out this, out _);
         }
-        public Points(int pts_x2)
+
+        [JsonConstructor]
+        public Points(int ptsx2)
         {
-            _ptsx2 = pts_x2;
+            PointsX2 = ptsx2;
         }
 
         public override string ToString()
         {
-            bool half = (_ptsx2 & 1) != 0;
-            int pts = _ptsx2 >> 1;
+            bool half = (PointsX2 & 1) != 0;
+            int pts = PointsX2 >> 1;
             if (half)
                 return pts == 0 ? "½" : $"{pts}½";
             return pts.ToString();
         }
 
 
-        public static Points operator -(Points a, Points b) => new Points(a._ptsx2 - b._ptsx2);
-        public static Points operator +(Points a, Points b) => new Points(a._ptsx2 + b._ptsx2);
+        public static Points operator -(Points a, Points b) => new Points(a.PointsX2 - b.PointsX2);
+        public static Points operator +(Points a, Points b) => new Points(a.PointsX2 + b.PointsX2);
     }
 }
