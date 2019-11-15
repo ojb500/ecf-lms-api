@@ -59,8 +59,8 @@ namespace Ojb500.EcfLms
             }
             else if (lastFirst.Length == 1)
             {
-                GivenName = lastFirst[0];
-                FamilyName = null;
+                GivenName = null;
+                FamilyName = lastFirst[0];
             }
             else
             {
@@ -80,9 +80,9 @@ namespace Ojb500.EcfLms
         public Grade Grade { get; set; }
         public override string ToString()
         {
-            if (FamilyName == null)
+            if (GivenName == null)
             {
-                return GivenName;
+                return FamilyName;
             }
             return $"{FamilyName}, {GivenName} ({Grade})";
         }
