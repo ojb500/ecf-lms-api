@@ -30,7 +30,7 @@ namespace Ojb500.EcfLms
             {
                 return result;
             }
-            return $"{result} (def)";
+            return $"{result}";
         }
 
         private static Regex _trimmer = new Regex(@"[10½]");
