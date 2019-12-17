@@ -78,6 +78,7 @@ namespace Ojb500.EcfLms
         public string GivenName { get; set; }
         public string FamilyName { get; set; }
         public Grade Grade { get; set; }
+        public bool IsDefault => FamilyName == "Default" && string.IsNullOrEmpty(GivenName);
         public override string ToString()
         {
             if (GivenName == null)

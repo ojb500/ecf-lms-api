@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Ojb500.EcfLms
 {
@@ -13,6 +14,9 @@ namespace Ojb500.EcfLms
             this.evt = evt;
             this.mc = mc;
         }
+
+
+        public bool IsDefault => Pairings.All(p => p.FirstPlayer.IsDefault || p.SecondPlayer.IsDefault);
 
         public Pairing[] Pairings => mc?.Pairings ?? Array.Empty<Pairing>();
 
