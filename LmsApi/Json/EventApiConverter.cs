@@ -14,7 +14,7 @@ namespace Ojb500.EcfLms.Json
 
         private static DateTime ParseDT(string dts, string t)
         {
-            dts = Regex.Replace(dts, "(st|nd|rd|th)", "");
+            dts = Regex.Replace(dts, "(st|nd|rd|th|Week )", "");
             var dt = DateTime.Parse($"{dts} {t}");
             return dt;
         }
