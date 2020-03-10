@@ -15,32 +15,34 @@ namespace GetLms
         static void Main(string[] args)
         {
 
-            var a = new FileApi(".\\2019.1");
-            //a.Update(Api.Default, 28757, getTables: true, Div2, Div3);
-            a.Update(Api.Default, 28757, getTables: false, Cup, Plate);
+            var a = new FileApi(".\\2019.2");
+            a.Update(Api.Default, 28757, getTables: true, Div2, Div3);
+            //a.Update(Api.Default, 28757, getTables: false, Cup, Plate);
 
 
-            // var a = Api.Default;
+            //var a = Api.Default;
             var api = a.GetOrganisation(28757);
             //var fixt = api.GetMatches(" Division 2 - Weston Trophy");
 
 
-            var d3 = api.GetCompetition(Div2);
+            var d2 = api.GetCompetition(Div2);
+            var reg = new Registration(d2);
 
-            var club = api.GetClub("Rotherham", Div3, Div2, Plate, Cup);
 
-            var now = DateTime.Now;
-            var (recents, upcoming) = (club.GetResults(now).Take(5), club.GetUpcoming(now).Take(5));
-            Console.WriteLine("Upcoming matches:");
-            foreach (var f in upcoming)
-            {
-                Console.WriteLine(f);
-            }
-            Console.WriteLine("Recent matches:");
-            foreach (var f in recents)
-            {
-                Console.WriteLine(f);
-            }
+            //var club = api.GetClub("Rotherham", Div3, Div2, Plate, Cup);
+
+            //var now = DateTime.Now;
+            //var (recents, upcoming) = (club.GetResults(now).Take(5), club.GetUpcoming(now).Take(5));
+            //Console.WriteLine("Upcoming matches:");
+            //foreach (var f in upcoming)
+            //{
+            //    Console.WriteLine(f);
+            //}
+            //Console.WriteLine("Recent matches:");
+            //foreach (var f in recents)
+            //{
+            //    Console.WriteLine(f);
+            //}
         }
     }
 }

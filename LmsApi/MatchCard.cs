@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace Ojb500.EcfLms
 {
@@ -20,6 +21,7 @@ namespace Ojb500.EcfLms
         public Team Right { get; set; }
         public DateTime Date { get; set; }
         public Pairing[] Pairings { get; set; }
-
+        public override string ToString()
+        => $"{Left.Abbreviated} v {Right.Abbreviated}, {Date.ToShortDateString()}";
     }
 }
