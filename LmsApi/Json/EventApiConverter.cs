@@ -12,8 +12,12 @@ namespace Ojb500.EcfLms.Json
             return objectType == typeof(Event);
         }
 
-        private static DateTime ParseDT(string dts, string t)
+        private static DateTime? ParseDT(string dts, string t)
         {
+            if (dts == "Postponed")
+            {
+                return default;
+            }
             dts = Regex.Replace(dts, "(st|nd|rd|th|Week )", "");
             var dt = DateTime.Parse($"{dts} {t}");
             return dt;

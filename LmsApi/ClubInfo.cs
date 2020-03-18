@@ -27,7 +27,7 @@ namespace Ojb500.EcfLms
                 .SelectMany(c => c.GetEvents())
                 .Where(e => pred(e.Home.Name)
                 || pred(e.Away.Name))
-                .OrderBy(e => e.DateTime)
+                .OrderBy(e => e.DateTime.GetValueOrDefault(new DateTime(3000, 1, 1)))
                 .ToArray();
         }
 

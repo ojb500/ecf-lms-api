@@ -15,7 +15,7 @@ namespace GetLms
         static void Main(string[] args)
         {
 
-            var a = new FileApi(".\\2019.2");
+            var a = new FileApi(".\\2019.3487432187");
             a.Update(Api.Default, 28757, getTables: true, Div2, Div3);
             //a.Update(Api.Default, 28757, getTables: false, Cup, Plate);
 
@@ -26,8 +26,24 @@ namespace GetLms
 
 
             var d2 = api.GetCompetition(Div2);
-            var reg = new Registration(d2);
+            var d3 = api.GetCompetition(Div3);
+            var evts = d2.GetEvents().ToList();
 
+            var club = api.GetClub("Rotherham", d2, d3);
+            var (recent, upc) = (club.GetResults().Take(5).ToList(),
+     club.GetUpcoming().Take(5).ToList());
+            var res = club.GetResults().ToList();
+            var reg = new Registration(d2, 3);
+            reg.Print("Rotherham A");
+
+            foreach (var regClub in reg.GetRegisteredPlayers())
+            {
+                Console.WriteLine(regClub.Team);
+                foreach (var regPlayer in regClub.Players)
+                {
+                    Console.WriteLine($" - {regPlayer}");
+                }
+            }
 
             //var club = api.GetClub("Rotherham", Div3, Div2, Plate, Cup);
 

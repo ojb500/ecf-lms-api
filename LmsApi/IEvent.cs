@@ -6,7 +6,7 @@ namespace Ojb500.EcfLms
     {
         Team Away { get; }
         Competition Competition { get; }
-        DateTime DateTime { get; }
+        DateTime? DateTime { get; }
         Team Home { get; }
         string MatchLink { get; }
         Score Result { get; }

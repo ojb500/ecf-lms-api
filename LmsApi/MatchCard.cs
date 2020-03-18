@@ -9,7 +9,7 @@ namespace Ojb500.EcfLms
         {
 
         }
-        internal MatchCard(Team left, Team right, DateTime date, Pairing[] pairings)
+        internal MatchCard(Team left, Team right, DateTime? date, Pairing[] pairings)
         {
             Left = left;
             Right = right;
@@ -19,9 +19,9 @@ namespace Ojb500.EcfLms
 
         public Team Left { get; set; }
         public Team Right { get; set; }
-        public DateTime Date { get; set; }
+        public DateTime? Date { get; set; }
         public Pairing[] Pairings { get; set; }
         public override string ToString()
-        => $"{Left.Abbreviated} v {Right.Abbreviated}, {Date.ToShortDateString()}";
+        => $"{Left.Abbreviated} v {Right.Abbreviated}, {Date.GetValueOrDefault().ToShortDateString()}";
     }
 }
