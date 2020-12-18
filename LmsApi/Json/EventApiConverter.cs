@@ -14,7 +14,7 @@ namespace Ojb500.EcfLms.Json
 
         private static DateTime? ParseDT(string dts, string t)
         {
-            if (dts == "Postponed")
+            if (dts == "Postponed" || dts.StartsWith("Not Set"))
             {
                 return default;
             }

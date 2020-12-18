@@ -19,7 +19,7 @@ namespace Ojb500.EcfLms
         public Grade(string value)
         {
             value = value.Trim();
-            if (value == "000")
+            if (value == "0" || value == "000")
             {
                 _grade = 0;
                 _category = (char) 0;
