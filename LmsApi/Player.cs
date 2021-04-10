@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Ojb500.EcfLms
 {
@@ -19,15 +20,16 @@ namespace Ojb500.EcfLms
         public Grade(string value)
         {
             value = value.Trim().TrimStart('0');
-            if (string.IsNullOrEmpty(value))
+            var gr = Regex.Match(value, @"[0-9]+").Value;
+            if (string.IsNullOrEmpty(gr))
             {
                 _grade = 0;
                 _category = (char) 0;
             }
             else
             {
-                _grade = ushort.Parse(value.Substring(0, 4));
-                _category = value[3];
+                _grade = ushort.Parse(gr);
+                _category = '_';
             }
         }
 
