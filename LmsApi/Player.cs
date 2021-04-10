@@ -18,15 +18,15 @@ namespace Ojb500.EcfLms
 
         public Grade(string value)
         {
-            value = value.Trim();
-            if (value == "0" || value == "000")
+            value = value.Trim().TrimStart('0');
+            if (string.IsNullOrEmpty(value))
             {
                 _grade = 0;
                 _category = (char) 0;
             }
             else
             {
-                _grade = ushort.Parse(value.Substring(0, 3));
+                _grade = ushort.Parse(value.Substring(0, 4));
                 _category = value[3];
             }
         }
