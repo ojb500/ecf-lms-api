@@ -14,7 +14,7 @@ namespace Ojb500.EcfLms
         public static Api Default = new Api();
 
 
-        public Api() : this("http://ecflms.org.uk/lms/lmsrest/league/")
+        public Api() : this("https://ecflms.org.uk/lms/lmsrest/league/")
         {
         }
         public Api(string baseAddress)
@@ -31,12 +31,15 @@ namespace Ojb500.EcfLms
 
         private async Task<Stream> GetJson(string file, string org, string name)
         {
+            file = file + ".json";
             Trace.WriteLine($"Requesting {file} with org={org}, name='{name}'");
             var result = await _hc.PostAsync(file, new FormUrlEncodedContent(new KeyValuePair<string, string>[]
                 {
                 new KeyValuePair<string, string>("org", org),
                 new KeyValuePair<string, string>("name", name)
                 })).ConfigureAwait(false);
+            
+            result.EnsureSuccessStatusCode();
 
             return await result.Content.ReadAsStreamAsync().ConfigureAwait(false);
         }
