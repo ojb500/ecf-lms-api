@@ -161,8 +161,8 @@ namespace Ojb500.EcfLms
             var result = el.GetProperty("result").GetString() ?? "";
 
             return new Pairing(board, isWhite,
-                new Player(hname, new Grade(hrating)),
-                new Player(aname, new Grade(arating)),
+                new Player(hname, new Rating(hrating)),
+                new Player(aname, new Rating(arating)),
                 GameResult.Parse(result));
         }
     }

@@ -156,18 +156,21 @@ namespace Ojb500.EcfLms.Test
         }
 
         [TestMethod]
-        public void ParseMatchResponse_Grades()
+        public void ParseMatchResponse_Ratings()
         {
             var mc = ParseMatchCards(ReadSample("match-excerpt.json"))[0];
 
-            // "2081 (2031)" → current rating: 2081
-            Assert.AreEqual(2081, mc.Pairings[0].FirstPlayer.Grade.Value);
+            // "2081 (2031)" → Primary=2081, Secondary=2031
+            Assert.AreEqual(2081, mc.Pairings[0].FirstPlayer.Rating.Primary);
+            Assert.AreEqual(2031, mc.Pairings[0].FirstPlayer.Rating.Secondary);
 
             // "2160 (2191)"
-            Assert.AreEqual(2160, mc.Pairings[0].SecondPlayer.Grade.Value);
+            Assert.AreEqual(2160, mc.Pairings[0].SecondPlayer.Rating.Primary);
+            Assert.AreEqual(2191, mc.Pairings[0].SecondPlayer.Rating.Secondary);
 
             // "1835 (1818)"
-            Assert.AreEqual(1835, mc.Pairings[5].FirstPlayer.Grade.Value);
+            Assert.AreEqual(1835, mc.Pairings[5].FirstPlayer.Rating.Primary);
+            Assert.AreEqual(1818, mc.Pairings[5].FirstPlayer.Rating.Secondary);
         }
 
         [TestMethod]
@@ -197,7 +200,7 @@ namespace Ojb500.EcfLms.Test
             Assert.AreEqual("Hughes", defaultBoard.FirstPlayer.FamilyName);
             Assert.IsTrue(defaultBoard.SecondPlayer.IsDefault);
             Assert.AreEqual("Default", defaultBoard.SecondPlayer.FamilyName);
-            Assert.AreEqual(0, defaultBoard.SecondPlayer.Grade.Value);
+            Assert.AreEqual(0, defaultBoard.SecondPlayer.Rating.Primary);
         }
 
         [TestMethod]
@@ -239,13 +242,14 @@ namespace Ojb500.EcfLms.Test
         }
 
         [TestMethod]
-        public void ParseMatchResponse_UnratedGrade()
+        public void ParseMatchResponse_UnratedRating()
         {
-            // Match 5: board 6 has "0000 (1751)" → no current rating → grade=0
+            // Match 5: board 6 has "0000 (1751)" → Primary=0, Secondary=1751
             var mc = ParseMatchCards(ReadSample("match-excerpt.json"))[4];
             var board6 = mc.Pairings[5];
             Assert.AreEqual("King", board6.FirstPlayer.FamilyName);
-            Assert.AreEqual(0, board6.FirstPlayer.Grade.Value);
+            Assert.AreEqual(0, board6.FirstPlayer.Rating.Primary);
+            Assert.AreEqual(1751, board6.FirstPlayer.Rating.Secondary);
         }
 
         #endregion

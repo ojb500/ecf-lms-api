@@ -40,8 +40,8 @@ namespace Ojb500.EcfLms.Json
 			var result = obj["result"]?.GetValue<string>() ?? "";
 
 			return new Pairing(board, isWhite,
-				new Player(hname, new Grade(hrating)),
-				new Player(aname, new Grade(arating)),
+				new Player(hname, new Rating(hrating)),
+				new Player(aname, new Rating(arating)),
 				GameResult.Parse(result));
 		}
 
