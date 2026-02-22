@@ -36,6 +36,21 @@ namespace Ojb500.EcfLms
             _org = orgId.ToString();
         }
 
+        public Dictionary<string, string> GetSeasons()
+        {
+            return _api.GetSeasons(_org);
+        }
+
+        public Dictionary<string, SeasonWithEvents> GetSeasonsWithEvents()
+        {
+            return _api.GetSeasonsWithEvents(_org);
+        }
+
+        public IEnumerable<ApiResult<Event>> GetClubEvents(string clubCode)
+        {
+            return _api.GetClubEvents(_org, clubCode);
+        }
+
         internal IEnumerable<MatchCard> GetMatchesInternal(string internalName)
         {
             return _api.GetMatchCards(_org, internalName);

@@ -7,5 +7,8 @@ namespace Ojb500.EcfLms
         LeagueTable GetTable(string org, string name);
         IEnumerable<Event> GetEvents(string org, string name);
         IEnumerable<MatchCard> GetMatchCards(string org, string name);
+        IEnumerable<ApiResult<Event>> GetClubEvents(string org, string clubCode);
+        Dictionary<string, string> GetSeasons(string org);
+        Dictionary<string, SeasonWithEvents> GetSeasonsWithEvents(string org);
     }
 }

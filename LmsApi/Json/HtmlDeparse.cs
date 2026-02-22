@@ -13,7 +13,7 @@ namespace Ojb500.EcfLms.Json
         public static string StripTag(string s)
         {
             var match = tag.Match(s);
-            return HttpUtility.HtmlDecode(match.Groups[1].Value);
+            return match.Success ? HttpUtility.HtmlDecode(match.Groups[1].Value) : s;
         }
 
         public static (string link, string text) DeparseLink(JsonNode token) => DeparseLink(token.AsValue().GetValue<string>());

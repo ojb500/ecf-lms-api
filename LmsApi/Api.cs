@@ -35,7 +35,18 @@ namespace Ojb500.EcfLms
 					org = org,
 					name = name
 				})).ConfigureAwait(false);
-            
+
+            result.EnsureSuccessStatusCode();
+
+            return await result.Content.ReadAsStreamAsync().ConfigureAwait(false);
+        }
+
+        private async Task<Stream> GetJson(string file, string org)
+        {
+            Trace.WriteLine($"Requesting {file} with org={org}");
+            var result = await _hc.PostAsync(file, JsonContent.Create(
+                new { org = org })).ConfigureAwait(false);
+
             result.EnsureSuccessStatusCode();
 
             return await result.Content.ReadAsStreamAsync().ConfigureAwait(false);
@@ -75,6 +86,11 @@ namespace Ojb500.EcfLms
             return Deserialise<T[]>(GetJson(file, org, name).Result);
         }
 
+        private T GetDirect<T>(string file, string org)
+        {
+            return Deserialise<T>(GetJson(file, org).Result);
+        }
+
         private T GetOne<T>(string file, string org, string name)
         {
             var results = Get<T>(file, org, name);
@@ -107,6 +123,39 @@ namespace Ojb500.EcfLms
             {
                 yield return ParseMatchCard(m);
             }
+        }
+
+        IEnumerable<ApiResult<Event>> IModel.GetClubEvents(string org, string clubCode)
+        {
+            return Get<ApiResult<Event>>("club", org, clubCode);
+        }
+
+        Dictionary<string, string> IModel.GetSeasons(string org)
+        {
+            return GetDirect<Dictionary<string, string>>("seasons", org);
+        }
+
+        Dictionary<string, SeasonWithEvents> IModel.GetSeasonsWithEvents(string org)
+        {
+            return GetDirect<Dictionary<string, SeasonWithEvents>>("seasonsWithEvents", org);
+        }
+
+        public string GetStandings(string org, string name, string season = null)
+        {
+            Stream s;
+            if (season != null)
+            {
+                Trace.WriteLine($"Requesting standings with org={org}, name='{name}', season='{season}'");
+                var result = _hc.PostAsync("standings", JsonContent.Create(
+                    new { org = org, name = name, season = season })).Result;
+                result.EnsureSuccessStatusCode();
+                s = result.Content.ReadAsStreamAsync().Result;
+            }
+            else
+            {
+                s = GetJson("standings", org, name).Result;
+            }
+            return ReadString(s);
         }
 
         internal static MatchCard ParseMatchCard(MatchApiResult m)

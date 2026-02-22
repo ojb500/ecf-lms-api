@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -250,6 +251,127 @@ namespace Ojb500.EcfLms.Test
             Assert.AreEqual("King", board6.FirstPlayer.FamilyName);
             Assert.AreEqual(0, board6.FirstPlayer.Rating.Primary);
             Assert.AreEqual(1751, board6.FirstPlayer.Rating.Secondary);
+        }
+
+        #endregion
+
+        #region Seasons parsing
+
+        [TestMethod]
+        public void ParseSeasonsResponse()
+        {
+            var json = ReadSample("seasons.json");
+            var seasons = JsonSerializer.Deserialize<Dictionary<string, string>>(json);
+
+            Assert.IsTrue(seasons.Count > 0);
+            Assert.AreEqual("2025-26", seasons["1734"]);
+            Assert.AreEqual("2024-25", seasons["626"]);
+            Assert.AreEqual("2023-24", seasons["633"]);
+        }
+
+        [TestMethod]
+        public void ParseSeasonsWithEventsResponse()
+        {
+            var json = ReadSample("seasonsWithEvents.json");
+            var seasons = JsonSerializer.Deserialize<Dictionary<string, SeasonWithEvents>>(json);
+
+            Assert.IsTrue(seasons.Count > 0);
+
+            var current = seasons["1734"];
+            Assert.AreEqual("2025-26", current.Name);
+            Assert.IsTrue(current.Events.Count > 0);
+            Assert.AreEqual("Div 1 - Davy Trophy", current.Events["8627"]);
+            Assert.AreEqual("Richardson Cup", current.Events["8632"]);
+        }
+
+        #endregion
+
+        #region Club parsing
+
+        [TestMethod]
+        public void ParseClubResponse()
+        {
+            var json = ReadSample("club-rotherham.json");
+            var results = JsonSerializer.Deserialize<ApiResult<Event>[]>(json);
+
+            Assert.AreEqual(1, results.Length);
+            var result = results[0];
+            Assert.IsTrue(result.Title.Contains("Rotherham"));
+            Assert.IsTrue(result.Data.Length > 0);
+
+            // First fixture: Barnsley A vs Rotherham A
+            Assert.AreEqual("Barnsley A", result.Data[0].Home.Name);
+            Assert.AreEqual("Rotherham A", result.Data[0].Away.Name);
+            Assert.AreEqual(8, result.Data[0].Result.Home.PointsX2);  // 4 × 2
+            Assert.AreEqual(4, result.Data[0].Result.Away.PointsX2);  // 2 × 2
+        }
+
+        #endregion
+
+        #region Table parsing
+
+        private static ApiResult<LeagueTableEntry> ParseTable(string json)
+            => JsonSerializer.Deserialize<ApiResult<LeagueTableEntry>[]>(json)[0];
+
+        [TestMethod]
+        public void ParseTableResponse()
+        {
+            var table = ParseTable(ReadSample("table-div1.json"));
+
+            Assert.AreEqual("Div 1 - Davy Trophy", table.Title);
+            Assert.AreEqual(8, table.Data.Length);
+        }
+
+        [TestMethod]
+        public void ParseTableResponse_TeamNames()
+        {
+            var table = ParseTable(ReadSample("table-div1.json"));
+
+            Assert.AreEqual("Worksop A", table.Data[0].Team.Name);
+            Assert.AreEqual("Woodseats A", table.Data[1].Team.Name);
+            Assert.AreEqual("Darnall & Handsworth A", table.Data[7].Team.Name);
+        }
+
+        [TestMethod]
+        public void ParseTableResponse_Record()
+        {
+            var table = ParseTable(ReadSample("table-div1.json"));
+
+            // Worksop A: P10, W7, D1, L2
+            var worksop = table.Data[0];
+            Assert.AreEqual(10, worksop.P);
+            Assert.AreEqual(7, worksop.W);
+            Assert.AreEqual(1, worksop.D);
+            Assert.AreEqual(2, worksop.L);
+        }
+
+        [TestMethod]
+        public void ParseTableResponse_ForAndAgainst()
+        {
+            var table = ParseTable(ReadSample("table-div1.json"));
+
+            // Worksop A: F=35, A=24 (whole numbers)
+            Assert.AreEqual(70, table.Data[0].F.PointsX2);   // 35 × 2
+            Assert.AreEqual(48, table.Data[0].A.PointsX2);   // 24 × 2
+
+            // Woodseats A: F=29½, A=18½ (half-point values)
+            Assert.AreEqual(59, table.Data[1].F.PointsX2);   // 29½ × 2
+            Assert.AreEqual(37, table.Data[1].A.PointsX2);   // 18½ × 2
+        }
+
+        [TestMethod]
+        public void ParseTableResponse_Points()
+        {
+            var table = ParseTable(ReadSample("table-div1.json"));
+
+            // Worksop A: 15 pts
+            Assert.AreEqual(30, table.Data[0].Pts.PointsX2);   // 15 × 2
+
+            // Woodseats A: 12 pts
+            Assert.AreEqual(24, table.Data[1].Pts.PointsX2);   // 12 × 2
+
+            // Darnall & Handsworth A: 3 pts
+            Assert.AreEqual(6, table.Data[7].Pts.PointsX2);    // 3 × 2
         }
 
         #endregion
