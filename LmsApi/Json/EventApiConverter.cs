@@ -1,43 +1,61 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Text.RegularExpressions;
+using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms.Json
 {
-    public class EventApiConverter : JsonConverter
+    public class EventApiConverter : JsonConverter<Event>
     {
-        public override bool CanConvert(Type objectType)
+        private static readonly string[] DateFormats = new[]
         {
-            return objectType == typeof(Event);
-        }
+            "ddd d MMM yy",   // "Mon 29 Sep 25"
+            "ddd dd MMM yy",  // "Wed 01 Oct 25"
+        };
 
-        private static DateTime? ParseDT(string dts, string t)
+        private static DateTime? ParseDT(string dts, string time)
         {
-            if (dts == "Postponed" || dts.StartsWith("Not Set"))
+            if (string.IsNullOrEmpty(dts) || dts == "Postponed" || dts.StartsWith("Not Set"))
             {
                 return default;
             }
-            dts = Regex.Replace(dts, "(st|nd|rd|th|Week )", "");
-            var dt = DateTime.Parse($"{dts} {t}");
-            return dt;
-        }
-        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
-        {
-            var ev = JArray.ReadFrom(reader);
 
-            var leftClub = Team.Parse(ev[0].Value<string>());
-            var (matchLink, result) = HtmlDeparse.DeparseLink(ev[1]);
-            var rightClub = Team.Parse(ev[2].Value<string>());
-            var dts = ev[3].Value<string>();
-            var (_, t) = HtmlDeparse.DeparseLink(ev[4]);
-            var dt = ParseDT(dts, t);
-            return new Event(leftClub, result, rightClub, matchLink, dt, null);
+            if (DateTime.TryParseExact(dts.Trim(), DateFormats, CultureInfo.InvariantCulture,
+                DateTimeStyles.None, out var date))
+            {
+                if (TimeSpan.TryParse(time, out var ts))
+                {
+                    date = date.Add(ts);
+                }
+                return date;
+            }
+
+            // Fallback: try general parse
+            if (DateTime.TryParse($"{dts} {time}", out var dt))
+            {
+                return dt;
+            }
+
+            return default;
         }
 
-        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
-        {
-            throw new NotImplementedException();
-        }
-    }
+		public override Event Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+		{
+			var ev = (JsonArray) JsonNode.Parse(ref reader);
+
+			var leftClub = Team.Parse(ev[0].AsValue().GetValue<string>());
+			var result = ev[1].AsValue().GetValue<string>();
+			var rightClub = Team.Parse(ev[2].AsValue().GetValue<string>());
+			var dts = ev[3].AsValue().GetValue<string>();
+			var time = ev[4].AsValue().GetValue<string>();
+			var dt = ParseDT(dts, time);
+			return new Event(leftClub, result, rightClub, null, dt, null);
+		}
+
+		public override void Write(Utf8JsonWriter writer, Event value, JsonSerializerOptions options)
+		{
+			throw new NotImplementedException();
+		}
+	}
 }

@@ -1,7 +1,4 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 
 namespace Ojb500.EcfLms
 {
@@ -14,10 +11,17 @@ namespace Ojb500.EcfLms
             int pts = 0;
             bool half = false;
             bool any = false;
+            bool negative = false;
             int i = 0;
             for (i = 0; i < readOnlySpan.Length && char.IsWhiteSpace(readOnlySpan[i]); i++)
             {
 
+            }
+
+            if (i < readOnlySpan.Length && readOnlySpan[i] == '-')
+            {
+                negative = true;
+                i++;
             }
 
             for (; i < readOnlySpan.Length; i++)
@@ -56,6 +60,10 @@ namespace Ojb500.EcfLms
             {
                 pts++;
             }
+            if (negative)
+            {
+                pts = -pts;
+            }
             points = new Points(pts);
             return true;
         }
@@ -65,7 +73,6 @@ namespace Ojb500.EcfLms
             var result = Points.TryParse(pts.AsSpan(), out this, out _);
         }
 
-        [JsonConstructor]
         public Points(int ptsx2)
         {
             PointsX2 = ptsx2;
@@ -73,11 +80,13 @@ namespace Ojb500.EcfLms
 
         public override string ToString()
         {
-            bool half = (PointsX2 & 1) != 0;
-            int pts = PointsX2 >> 1;
+            int abs = Math.Abs(PointsX2);
+            bool half = (abs & 1) != 0;
+            int pts = abs >> 1;
+            string sign = PointsX2 < 0 ? "-" : "";
             if (half)
-                return pts == 0 ? "½" : $"{pts}½";
-            return pts.ToString();
+                return pts == 0 ? $"{sign}½" : $"{sign}{pts}½";
+            return $"{sign}{pts}";
         }
 
 

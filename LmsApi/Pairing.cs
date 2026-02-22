@@ -1,8 +1,5 @@
-﻿using Newtonsoft.Json;
-
-namespace Ojb500.EcfLms
+﻿namespace Ojb500.EcfLms
 {
-    [JsonObject]
     public class Pairing
     {
         public Pairing()

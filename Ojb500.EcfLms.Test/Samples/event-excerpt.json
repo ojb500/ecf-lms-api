@@ -1,0 +1,47 @@
+[
+  {
+    "title": "Fixtures for Div 1 - Davy Trophy",
+    "header": [
+      "Home Team",
+      "Result",
+      "Away Team",
+      "Date",
+      "Time",
+      "Status"
+    ],
+    "data": [
+      [
+        "Darnall & Handsworth A",
+        "1 - 5",
+        "Woodseats A",
+        "Mon 29 Sep 25",
+        "19:30",
+        "OU"
+      ],
+      [
+        "Hillsborough A",
+        "3 - 3",
+        "Sheffield Nomads A",
+        "Mon 29 Sep 25",
+        "19:30",
+        "OU"
+      ],
+      [
+        "Ecclesall A",
+        "3 - 3",
+        "Worksop A",
+        "Wed 1 Oct 25",
+        "19:30",
+        "OU"
+      ],
+      [
+        "Darnall & Handsworth A",
+        "0 - 0",
+        "Ecclesall A",
+        "Mon 23 Feb 26",
+        "19:30",
+        "OU"
+      ]
+    ]
+  }
+]

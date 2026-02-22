@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms
 {
-    [JsonObject]
     public class LeagueTable : ApiResult<LeagueTableEntry>, ILeagueTable
     {
         public string Name => Competition?.Name ?? Title;

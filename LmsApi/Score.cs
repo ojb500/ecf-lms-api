@@ -1,7 +1,7 @@
-﻿using Newtonsoft.Json;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms
 {
@@ -14,7 +14,6 @@ namespace Ojb500.EcfLms
         public bool IsEmpty => (Home + Away).PointsX2 == 0;
         public override string ToString() => $"{Home}–{Away}";
 
-        [JsonConstructor]
         public Score(Points h, Points a) => (Home, Away) = (h, a);
         public Score(string s)
         {

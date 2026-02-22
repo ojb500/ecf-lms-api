@@ -1,8 +1,10 @@
-﻿using Newtonsoft.Json;
+﻿using Ojb500.EcfLms.Json;
 using System;
+using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms
 {
+	[JsonConverter(typeof(EventApiConverter))]
     public class Event : IEvent
     {
         public Event(Team home, string result, Team away, string matchLink, DateTime? dt, Competition competition)
@@ -11,7 +13,6 @@ namespace Ojb500.EcfLms
             
         }
 
-        [JsonConstructor]
         public Event(Team home, Score result, Team away, string matchLink, DateTime? dateTime, Competition competition = null)
         {
             Home = home;

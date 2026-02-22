@@ -63,7 +63,7 @@ namespace Ojb500.EcfLms
         internal MatchCard GetMatchCard(IEvent evt)
         {
             var matches = GetMatches();
-            return matches.FirstOrDefault(mc => mc.Date.GetValueOrDefault().Date == evt.DateTime.GetValueOrDefault().Date && mc.Left.Name == evt.Home.Name && mc.Right.Name == evt.Away.Name);
+            return matches.FirstOrDefault(mc => mc.Left.Name == evt.Home.Name && mc.Right.Name == evt.Away.Name);
         }
     }
 }

@@ -19,6 +19,13 @@ namespace Ojb500.EcfLms
 
         public Grade(string value)
         {
+            // New API format: "2081 (2031)" — current rating, then previous in parens.
+            // "0000 (1751)" means no current rating. "0000 ()" means completely unrated.
+            // Take only the part before any parentheses.
+            var parenIdx = value.IndexOf('(');
+            if (parenIdx >= 0)
+                value = value.Substring(0, parenIdx);
+
             value = value.Trim().TrimStart('0');
             var gr = Regex.Match(value, @"[0-9]+").Value;
             if (string.IsNullOrEmpty(gr))

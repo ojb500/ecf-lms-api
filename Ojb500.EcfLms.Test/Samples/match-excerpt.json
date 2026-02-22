@@ -1,0 +1,355 @@
+[
+  {
+    "title": "Chesterfield A v Ecclesall ARound 1",
+    "header": [
+      "Board",
+      "Rating",
+      "Chesterfield A",
+      " V ",
+      "Ecclesall A",
+      "Rating"
+    ],
+    "totals": [
+      "Total",
+      11724,
+      " ",
+      "5 - 1",
+      " ",
+      12052
+    ],
+    "data": [
+      {
+        "board": "1 ( B )",
+        "hrating": "2081 (2031)",
+        "hname": "Ackley, Peter",
+        "result": "1 - 0",
+        "aname": "Starley, Robert",
+        "arating": "2160 (2191)"
+      },
+      {
+        "board": "2 ( W )",
+        "hrating": "2024 (2042)",
+        "hname": "Latham, David",
+        "result": "½ - ½",
+        "aname": "Burnett, Jim",
+        "arating": "2107 (2103)"
+      },
+      {
+        "board": "3 ( B )",
+        "hrating": "1990 (1970)",
+        "hname": "Howard, D Martin",
+        "result": "½ - ½",
+        "aname": "Sullivan, Daniel JS",
+        "arating": "2053 (1964)"
+      },
+      {
+        "board": "4 ( W )",
+        "hrating": "1907 (1903)",
+        "hname": "Burke, Steven J",
+        "result": "1 - 0",
+        "aname": "Marley, James RG",
+        "arating": "2016 (1968)"
+      },
+      {
+        "board": "5 ( B )",
+        "hrating": "1887 (1871)",
+        "hname": "Trafford, John",
+        "result": "1 - 0",
+        "aname": "Hempson, Peter W",
+        "arating": "1882 (1858)"
+      },
+      {
+        "board": "6 ( W )",
+        "hrating": "1835 (1818)",
+        "hname": "Ashcroft, David",
+        "result": "1 - 0",
+        "aname": "McIntosh, Alan S",
+        "arating": "1834 (1815)"
+      }
+    ]
+  },
+  {
+    "title": "Sheffield Nomads A v Ecclesall ARound 1",
+    "header": [
+      "Board",
+      "Rating",
+      "Sheffield Nomads A",
+      " V ",
+      "Ecclesall A",
+      "Rating"
+    ],
+    "totals": [
+      "Total",
+      12075,
+      " ",
+      "3½ - 2½",
+      " ",
+      10186
+    ],
+    "data": [
+      {
+        "board": "1 ( B )",
+        "hrating": "2226 (2140)",
+        "hname": "Milson, Samuel A",
+        "result": "0 - 1",
+        "aname": "Starley, Robert",
+        "arating": "2160 (2191)"
+      },
+      {
+        "board": "2 ( W )",
+        "hrating": "2180 (2201)",
+        "hname": "Nelson, Jonathan P",
+        "result": "½ - ½",
+        "aname": "Burnett, Jim",
+        "arating": "2107 (2103)"
+      },
+      {
+        "board": "3 ( B )",
+        "hrating": "2103 (2117)",
+        "hname": "Handley, Michael R",
+        "result": "0 - 1",
+        "aname": "Cormack, Ewan",
+        "arating": "2021 (2030)"
+      },
+      {
+        "board": "4 ( W )",
+        "hrating": "1951 (1970)",
+        "hname": "Pasialis, Vasileios",
+        "result": "1 - 0",
+        "aname": "Marley, James RG",
+        "arating": "2016 (1968)"
+      },
+      {
+        "board": "5 ( B )",
+        "hrating": "1897 (1871)",
+        "hname": "Wheatley, Paul",
+        "result": "1 - 0",
+        "aname": "Hempson, Peter W",
+        "arating": "1882 (1858)"
+      },
+      {
+        "board": "6 ( W )",
+        "hrating": "1718 (1696)",
+        "hname": "Hughes, Michael",
+        "result": "1 - 0",
+        "aname": "Default",
+        "arating": "0000 ()"
+      }
+    ]
+  },
+  {
+    "title": "Hillsborough A v Worksop ARound 1",
+    "header": [
+      "Board",
+      "Rating",
+      "Hillsborough A",
+      " V ",
+      "Worksop A",
+      "Rating"
+    ],
+    "totals": [
+      "Total",
+      11982,
+      " ",
+      "1½ - 3½",
+      " ",
+      11698
+    ],
+    "data": [
+      {
+        "board": "1 ( B )",
+        "hrating": "2192 (2203)",
+        "hname": "Ross, Chris N",
+        "result": "0 - 0",
+        "aname": "Klimchik, Alexandr",
+        "arating": "2134 (2201)"
+      },
+      {
+        "board": "2 ( W )",
+        "hrating": "2031 (2091)",
+        "hname": "Joseph, Patrick",
+        "result": "½ - ½",
+        "aname": "Tait, Jonathan A",
+        "arating": "2107 (2109)"
+      },
+      {
+        "board": "3 ( B )",
+        "hrating": "1995 (2015)",
+        "hname": "Ai, Farshad",
+        "result": "0 - 1",
+        "aname": "Davis, Jim",
+        "arating": "1985 (2054)"
+      },
+      {
+        "board": "4 ( W )",
+        "hrating": "1936 (1946)",
+        "hname": "Fletcher, Paul",
+        "result": "½ - ½",
+        "aname": "Graham, Oliver",
+        "arating": "1829 (1865)"
+      },
+      {
+        "board": "5 ( B )",
+        "hrating": "1920 (1917)",
+        "hname": "Walker, Carl",
+        "result": "½ - ½",
+        "aname": "Griffiths, Phil",
+        "arating": "1865 (1858)"
+      },
+      {
+        "board": "6 ( W )",
+        "hrating": "1908 (1894)",
+        "hname": "Muflehi, Khaled",
+        "result": "0 - 1",
+        "aname": "Allen, Andrew",
+        "arating": "1778 (1779)"
+      }
+    ]
+  },
+  {
+    "title": "Worksop A v Hillsborough ARound 1",
+    "header": [
+      "Board",
+      "Rating",
+      "Worksop A",
+      " V ",
+      "Hillsborough A",
+      "Rating"
+    ],
+    "totals": [
+      "Total",
+      11957,
+      " ",
+      "4½ - 1½",
+      " ",
+      11409
+    ],
+    "data": [
+      {
+        "board": "1 ( W )",
+        "hrating": "2134 (2201)",
+        "hname": "Klimchik, Alexandr",
+        "result": "½ - ½",
+        "aname": "Ross, Chris N",
+        "arating": "2192 (2203)"
+      },
+      {
+        "board": "2 ( B )",
+        "hrating": "2107 (2109)",
+        "hname": "Tait, Jonathan A",
+        "result": "1 - 0(def)",
+        "aname": "Walker, Carl",
+        "arating": "1920 (1917)"
+      },
+      {
+        "board": "3 ( W )",
+        "hrating": "2037 (2056)",
+        "hname": "Coates, David H",
+        "result": "½ - ½",
+        "aname": "Fletcher, Paul",
+        "arating": "1936 (1946)"
+      },
+      {
+        "board": "4 ( B )",
+        "hrating": "1985 (2054)",
+        "hname": "Davis, Jim",
+        "result": "1 - 0",
+        "aname": "Wood, Bryan",
+        "arating": "1799 (1749)"
+      },
+      {
+        "board": "5 ( W )",
+        "hrating": "1829 (1865)",
+        "hname": "Graham, Oliver",
+        "result": "½ - ½",
+        "aname": "Wood, Ben",
+        "arating": "1792 (1855)"
+      },
+      {
+        "board": "6 ( B )",
+        "hrating": "1865 (1858)",
+        "hname": "Griffiths, Phil",
+        "result": "1 - 0",
+        "aname": "Mercy, John R",
+        "arating": "1770 (1744)"
+      }
+    ]
+  },
+  {
+    "title": "Ecclesall B v SASCA BRound 1",
+    "header": [
+      "Board",
+      "Rating",
+      "Ecclesall B",
+      " V ",
+      "SASCA B",
+      "Rating"
+    ],
+    "totals": [
+      "Total",
+      9315,
+      " ",
+      "4½ - 1½",
+      " ",
+      11210
+    ],
+    "data": [
+      {
+        "board": "1 ( W )",
+        "hrating": "2021 (2030)",
+        "hname": "Cormack, Ewan",
+        "result": "½ - ½",
+        "aname": "Guo, Xi-Yang",
+        "arating": "2149 (2145)"
+      },
+      {
+        "board": "2 ( B )",
+        "hrating": "1861 (1885)",
+        "hname": "Gollins, Tim",
+        "result": "½ - ½",
+        "aname": "Cammanchery Krishnan, Rishab",
+        "arating": "1936 (1872)"
+      },
+      {
+        "board": "3 ( W )",
+        "hrating": "1834 (1815)",
+        "hname": "McIntosh, Alan S",
+        "result": "½ - ½",
+        "aname": "Tomlinson, Zak",
+        "arating": "1806 (1803)"
+      },
+      {
+        "board": "4 ( B )",
+        "hrating": "1796 (1811)",
+        "hname": "McIntosh, Ken A",
+        "result": "0 - 1",
+        "aname": "Woozeer, Seth",
+        "arating": "1867 (1996)"
+      },
+      {
+        "board": "5 ( W )",
+        "hrating": "1803 (1746)",
+        "hname": "Clark, John A",
+        "result": "0 - 1",
+        "aname": "Gibbs, Steve J",
+        "arating": "1760 (1808)"
+      },
+      {
+        "board": "6 ( B )",
+        "hrating": "0000 (1751)",
+        "hname": "King, Simon",
+        "result": "0 - 1",
+        "aname": "Hemingway, Byron",
+        "arating": "1692 (1781)"
+      },
+      [
+        "Adjustment",
+        " ",
+        " ",
+        "3 : -3",
+        " ",
+        " "
+      ]
+    ]
+  }
+]

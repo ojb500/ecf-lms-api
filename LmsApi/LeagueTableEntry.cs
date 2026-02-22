@@ -1,7 +1,9 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Ojb500.EcfLms.Json;
+using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms
 {
+	[JsonConverter(typeof(LeagueTableEntryApiConverter))]
     public class LeagueTableEntry
     {
         public LeagueTableEntry(Team team, int p, int w, int d, int l, Points f, Points a, Points pts)
