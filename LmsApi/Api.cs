@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Text.Json;
@@ -31,8 +32,19 @@ namespace Ojb500.EcfLms
             _hc = CreateHttpClient(baseAddress);
         }
 
+        internal Api(HttpMessageHandler handler)
+        {
+            _baseAddress = "https://lms.englishchess.org.uk/lms/lmsrest/league/";
+            _hc = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(_baseAddress)
+            };
+            _hc.DefaultRequestHeaders.Accept.Clear();
+            _hc.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+        }
 
-        private async Task<Stream> GetJson(string file, string org, string name)
+
+        private async Task<Stream> GetJson(string file, string org, string name, CancellationToken ct)
         {
             Trace.WriteLine($"Requesting {file} with org={org}, name='{name}'");
 			var result = await _hc.PostAsync(file, JsonContent.Create(
@@ -40,22 +52,22 @@ namespace Ojb500.EcfLms
 				{
 					org = org,
 					name = name
-				})).ConfigureAwait(false);
+				}), ct).ConfigureAwait(false);
 
             result.EnsureSuccessStatusCode();
 
-            return await result.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            return await result.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
         }
 
-        private async Task<Stream> GetJson(string file, string org)
+        private async Task<Stream> GetJson(string file, string org, CancellationToken ct)
         {
             Trace.WriteLine($"Requesting {file} with org={org}");
             var result = await _hc.PostAsync(file, JsonContent.Create(
-                new { org = org })).ConfigureAwait(false);
+                new { org = org }), ct).ConfigureAwait(false);
 
             result.EnsureSuccessStatusCode();
 
-            return await result.Content.ReadAsStreamAsync().ConfigureAwait(false);
+            return await result.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
         }
 
         private readonly string _baseAddress;
@@ -87,19 +99,19 @@ namespace Ojb500.EcfLms
             }
         }
 
-        private T[] Get<T>(string file, string org, string name)
+        private async Task<T[]> GetAsync<T>(string file, string org, string name, CancellationToken ct)
         {
-            return Deserialise<T[]>(GetJson(file, org, name).Result);
+            return Deserialise<T[]>(await GetJson(file, org, name, ct).ConfigureAwait(false));
         }
 
-        private T GetDirect<T>(string file, string org)
+        private async Task<T> GetDirectAsync<T>(string file, string org, CancellationToken ct)
         {
-            return Deserialise<T>(GetJson(file, org).Result);
+            return Deserialise<T>(await GetJson(file, org, ct).ConfigureAwait(false));
         }
 
-        private T GetOne<T>(string file, string org, string name)
+        private async Task<T> GetOneAsync<T>(string file, string org, string name, CancellationToken ct)
         {
-            var results = Get<T>(file, org, name);
+            var results = await GetAsync<T>(file, org, name, ct).ConfigureAwait(false);
             if (results.Length != 1)
             {
                 if (results.Length > 1)
@@ -111,9 +123,9 @@ namespace Ojb500.EcfLms
             return results[0];
         }
 
-        LeagueTable IModel.GetTable(string org, string name)
+        async Task<LeagueTable> IModel.GetTableAsync(string org, string name, CancellationToken ct)
         {
-            var results = Get<ApiResult<LeagueTableEntry>>("table", org, name);
+            var results = await GetAsync<ApiResult<LeagueTableEntry>>("table", org, name, ct).ConfigureAwait(false);
             if (results.Length > 1)
                 throw new InvalidOperationException($"Expected 1 result, got {results.Length}");
             if (results.Length == 0)
@@ -122,54 +134,48 @@ namespace Ojb500.EcfLms
             return new LeagueTable { Title = r.Title, Header = r.Header, Data = r.Data };
         }
 
-        IEnumerable<Event> IModel.GetEvents(string org, string name)
+        async Task<Event[]> IModel.GetEventsAsync(string org, string name, CancellationToken ct)
         {
-            var s = GetOne<ApiResult<Event>>("event", org, name);
+            var s = await GetOneAsync<ApiResult<Event>>("event", org, name, ct).ConfigureAwait(false);
             return s.Data;
         }
 
-        IEnumerable<MatchCard> IModel.GetMatchCards(string org, string name)
+        async Task<MatchCard[]> IModel.GetMatchCardsAsync(string org, string name, CancellationToken ct)
         {
-            var s = Get<MatchApiResult>("match", org, name);
-            foreach (var m in s)
-            {
-                yield return ParseMatchCard(m);
-            }
+            var s = await GetAsync<MatchApiResult>("match", org, name, ct).ConfigureAwait(false);
+            return s.Select(m => ParseMatchCard(m)).ToArray();
         }
 
-        IEnumerable<CompetitionEvents> IModel.GetClubEvents(string org, string clubCode)
+        async Task<CompetitionEvents[]> IModel.GetClubEventsAsync(string org, string clubCode, CancellationToken ct)
         {
-            var results = Get<ApiResult<Event>>("club", org, clubCode);
-            foreach (var r in results)
-            {
-                yield return new CompetitionEvents(r.Title, r.Data);
-            }
+            var results = await GetAsync<ApiResult<Event>>("club", org, clubCode, ct).ConfigureAwait(false);
+            return results.Select(r => new CompetitionEvents(r.Title, r.Data)).ToArray();
         }
 
-        Dictionary<string, string> IModel.GetSeasons(string org)
+        async Task<Dictionary<string, string>> IModel.GetSeasonsAsync(string org, CancellationToken ct)
         {
-            return GetDirect<Dictionary<string, string>>("seasons", org);
+            return await GetDirectAsync<Dictionary<string, string>>("seasons", org, ct).ConfigureAwait(false);
         }
 
-        Dictionary<string, SeasonWithEvents> IModel.GetSeasonsWithEvents(string org)
+        async Task<Dictionary<string, SeasonWithEvents>> IModel.GetSeasonsWithEventsAsync(string org, CancellationToken ct)
         {
-            return GetDirect<Dictionary<string, SeasonWithEvents>>("seasonsWithEvents", org);
+            return await GetDirectAsync<Dictionary<string, SeasonWithEvents>>("seasonsWithEvents", org, ct).ConfigureAwait(false);
         }
 
-        public string GetStandings(string org, string name, string season = null)
+        public async Task<string> GetStandingsAsync(string org, string name, string season = null, CancellationToken ct = default)
         {
             Stream s;
             if (season != null)
             {
                 Trace.WriteLine($"Requesting standings with org={org}, name='{name}', season='{season}'");
-                var result = _hc.PostAsync("standings", JsonContent.Create(
-                    new { org = org, name = name, season = season })).Result;
+                var result = await _hc.PostAsync("standings", JsonContent.Create(
+                    new { org = org, name = name, season = season }), ct).ConfigureAwait(false);
                 result.EnsureSuccessStatusCode();
-                s = result.Content.ReadAsStreamAsync().Result;
+                s = await result.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
             }
             else
             {
-                s = GetJson("standings", org, name).Result;
+                s = await GetJson("standings", org, name, ct).ConfigureAwait(false);
             }
             return ReadString(s);
         }

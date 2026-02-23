@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ojb500.EcfLms
 {
@@ -8,11 +10,11 @@ namespace Ojb500.EcfLms
     /// </summary>
     public interface IModel
     {
-        LeagueTable GetTable(string org, string name);
-        IEnumerable<Event> GetEvents(string org, string name);
-        IEnumerable<MatchCard> GetMatchCards(string org, string name);
-        IEnumerable<CompetitionEvents> GetClubEvents(string org, string clubCode);
-        Dictionary<string, string> GetSeasons(string org);
-        Dictionary<string, SeasonWithEvents> GetSeasonsWithEvents(string org);
+        Task<LeagueTable> GetTableAsync(string org, string name, CancellationToken ct = default);
+        Task<Event[]> GetEventsAsync(string org, string name, CancellationToken ct = default);
+        Task<MatchCard[]> GetMatchCardsAsync(string org, string name, CancellationToken ct = default);
+        Task<CompetitionEvents[]> GetClubEventsAsync(string org, string clubCode, CancellationToken ct = default);
+        Task<Dictionary<string, string>> GetSeasonsAsync(string org, CancellationToken ct = default);
+        Task<Dictionary<string, SeasonWithEvents>> GetSeasonsWithEventsAsync(string org, CancellationToken ct = default);
     }
 }

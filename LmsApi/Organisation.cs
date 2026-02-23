@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ojb500.EcfLms
 {
@@ -35,36 +37,36 @@ namespace Ojb500.EcfLms
         }
 
         /// <summary>Returns the available seasons as a dictionary of ID to season name.</summary>
-        public Dictionary<string, string> GetSeasons()
+        public Task<Dictionary<string, string>> GetSeasonsAsync(CancellationToken ct = default)
         {
-            return _api.GetSeasons(_org);
+            return _api.GetSeasonsAsync(_org, ct);
         }
 
         /// <summary>Returns seasons with their competition/event mappings.</summary>
-        public Dictionary<string, SeasonWithEvents> GetSeasonsWithEvents()
+        public Task<Dictionary<string, SeasonWithEvents>> GetSeasonsWithEventsAsync(CancellationToken ct = default)
         {
-            return _api.GetSeasonsWithEvents(_org);
+            return _api.GetSeasonsWithEventsAsync(_org, ct);
         }
 
         /// <summary>Returns all fixtures for a club, grouped by competition.</summary>
-        public IEnumerable<CompetitionEvents> GetClubEvents(string clubCode)
+        public Task<CompetitionEvents[]> GetClubEventsAsync(string clubCode, CancellationToken ct = default)
         {
-            return _api.GetClubEvents(_org, clubCode);
+            return _api.GetClubEventsAsync(_org, clubCode, ct);
         }
 
-        internal IEnumerable<MatchCard> GetMatchesInternal(string internalName)
+        internal Task<MatchCard[]> GetMatchesInternalAsync(string internalName, CancellationToken ct = default)
         {
-            return _api.GetMatchCards(_org, internalName);
+            return _api.GetMatchCardsAsync(_org, internalName, ct);
         }
 
-        internal IEnumerable<Event> GetEventsInternal(string internalName)
+        internal Task<Event[]> GetEventsInternalAsync(string internalName, CancellationToken ct = default)
         {
-            return _api.GetEvents(_org, internalName);
+            return _api.GetEventsAsync(_org, internalName, ct);
         }
 
-        internal LeagueTable GetTableInternal(string internalName)
+        internal Task<LeagueTable> GetTableInternalAsync(string internalName, CancellationToken ct = default)
         {
-            return _api.GetTable(_org, internalName);
+            return _api.GetTableAsync(_org, internalName, ct);
         }
     }
 }

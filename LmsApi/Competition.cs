@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Ojb500.EcfLms
 {
@@ -28,15 +30,15 @@ namespace Ojb500.EcfLms
             InternalName = name;
         }
 
-        private List<Event> _events;
-        private List<MatchCard> _matches;
+        private Event[] _events;
+        private MatchCard[] _matches;
         private LeagueTable _table;
 
         /// <summary>Returns all fixtures in this competition.</summary>
-        public IEnumerable<Event> GetEvents() {
+        public async Task<Event[]> GetEventsAsync(CancellationToken ct = default) {
             if (_events == null)
             {
-                _events = _org.GetEventsInternal(InternalName).ToList();
+                _events = await _org.GetEventsInternalAsync(InternalName, ct).ConfigureAwait(false);
                 foreach (var ev in _events)
                 {
                     ev.Competition = this;
@@ -46,17 +48,24 @@ namespace Ojb500.EcfLms
         }
 
         /// <summary>Returns detailed match cards with board-by-board pairings.</summary>
-        public IEnumerable<MatchCard> GetMatches() => _matches ?? (_matches = _org.GetMatchesInternal(InternalName).ToList());
+        public async Task<MatchCard[]> GetMatchesAsync(CancellationToken ct = default)
+        {
+            if (_matches == null)
+            {
+                _matches = await _org.GetMatchesInternalAsync(InternalName, ct).ConfigureAwait(false);
+            }
+            return _matches;
+        }
 
         /// <summary>Returns the league table for this competition.</summary>
-        public LeagueTable GetTable()
+        public async Task<LeagueTable> GetTableAsync(CancellationToken ct = default)
         {
             if (_table != null)
             {
                 return _table;
             }
 
-            _table = _org.GetTableInternal(InternalName);
+            _table = await _org.GetTableInternalAsync(InternalName, ct).ConfigureAwait(false);
             _table.Competition = this;
             return _table;
         }
