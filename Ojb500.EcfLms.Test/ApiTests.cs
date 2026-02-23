@@ -315,7 +315,7 @@ namespace Ojb500.EcfLms.Test
 
             // Entry 0: "Alexandr Klimchik", "1 (b22)", "1 (w13)", "1 (b12)", "- (  )"
             var entry = crosstable.Entries[0];
-            Assert.AreEqual(1, entry.SeedNumber);
+            Assert.AreEqual(1, entry.Rank);
             Assert.AreEqual("Alexandr Klimchik", entry.Name);
 
             // Round 1: "1 (b22)" - win with black against 22
@@ -331,7 +331,7 @@ namespace Ojb500.EcfLms.Test
 
             // Look up opponent by seed number via indexer
             var opponent = crosstable[entry.Results[0].OpponentNumber];
-            Assert.AreEqual(22, opponent.SeedNumber);
+            Assert.AreEqual(22, opponent.Rank);
             Assert.IsNotNull(opponent.Name);
         }
 

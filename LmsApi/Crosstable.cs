@@ -20,7 +20,7 @@ namespace Ojb500.EcfLms
         {
             get
             {
-                _bySeed ??= Entries.ToDictionary(e => e.SeedNumber);
+                _bySeed ??= Entries.ToDictionary(e => e.Rank);
                 return _bySeed[seedNumber];
             }
         }

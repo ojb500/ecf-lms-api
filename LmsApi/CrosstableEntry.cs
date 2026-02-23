@@ -9,14 +9,14 @@ namespace Ojb500.EcfLms
     {
         public CrosstableEntry(int seedNumber, string name, RoundResult[] results, Points total)
         {
-            SeedNumber = seedNumber;
+            Rank = seedNumber;
             Name = name;
             Results = results;
             Total = total;
         }
 
         /// <summary>The player's seed/draw number.</summary>
-        public int SeedNumber { get; }
+        public int Rank { get; }
         /// <summary>The player's name.</summary>
         public string Name { get; }
         /// <summary>Results for each round.</summary>
@@ -26,7 +26,7 @@ namespace Ojb500.EcfLms
 
         public override string ToString()
         {
-            return $"{SeedNumber}. {Name} ({Total})";
+            return $"{Rank}. {Name} ({Total})";
         }
     }
 }
