@@ -321,16 +321,16 @@ namespace Ojb500.EcfLms.Test
             // Round 1: "1 (b22)" - win with black against 22
             Assert.AreEqual(2, entry.Results[0].Score.PointsX2); // 1 point
             Assert.AreEqual(false, entry.Results[0].IsWhite);
-            Assert.AreEqual(22, entry.Results[0].OpponentNumber);
+            Assert.AreEqual(22, entry.Results[0].OpponentRank);
             Assert.IsTrue(entry.Results[0].IsPlayed);
 
             // Round 2: "1 (w13)" - win with white against 13
             Assert.AreEqual(2, entry.Results[1].Score.PointsX2);
             Assert.AreEqual(true, entry.Results[1].IsWhite);
-            Assert.AreEqual(13, entry.Results[1].OpponentNumber);
+            Assert.AreEqual(13, entry.Results[1].OpponentRank);
 
             // Look up opponent by seed number via indexer
-            var opponent = crosstable[entry.Results[0].OpponentNumber];
+            var opponent = crosstable[entry.Results[0].OpponentRank];
             Assert.AreEqual(22, opponent.Rank);
             Assert.IsNotNull(opponent.Name);
         }

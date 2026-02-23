@@ -10,7 +10,7 @@ namespace Ojb500.EcfLms
         public Points Score { get; }
         /// <summary>Whether the player had white. Null for byes, defaults, and unplayed rounds.</summary>
         public bool? IsWhite { get; }
-        public int OpponentNumber { get; }
+        public int OpponentRank { get; }
         public bool IsPlayed { get; }
         public bool IsDefault { get; }
         public bool IsHalfPointBye { get; }
@@ -19,7 +19,7 @@ namespace Ojb500.EcfLms
         {
             Score = score;
             IsWhite = isWhite;
-            OpponentNumber = opponentNumber;
+            OpponentRank = opponentNumber;
             IsPlayed = isPlayed;
             IsDefault = isDefault;
             IsHalfPointBye = isHalfPointBye;
@@ -73,7 +73,7 @@ namespace Ojb500.EcfLms
             if (IsDefault) return $"{Score} (def)";
             if (IsHalfPointBye) return $"{Score} (HPB)";
             var colour = IsWhite == true ? "w" : "b";
-            return $"{Score} ({colour}{OpponentNumber})";
+            return $"{Score} ({colour}{OpponentRank})";
         }
     }
 }
