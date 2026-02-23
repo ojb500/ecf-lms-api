@@ -16,5 +16,6 @@ namespace Ojb500.EcfLms
         Task<CompetitionEvents[]> GetClubEventsAsync(string org, string clubCode, CancellationToken ct = default);
         Task<Dictionary<string, string>> GetSeasonsAsync(string org, CancellationToken ct = default);
         Task<Dictionary<string, SeasonWithEvents>> GetSeasonsWithEventsAsync(string org, CancellationToken ct = default);
+        Task<Crosstable> GetCrosstableAsync(string org, string name, CancellationToken ct = default);
     }
 }

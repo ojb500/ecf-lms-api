@@ -88,6 +88,7 @@ namespace Ojb500.EcfLms
         private T Deserialise<T>(Stream s)
         {
             var str = ReadString(s);
+            CheckForApiError(str);
 			return JsonSerializer.Deserialize<T>(str);
         }
 
@@ -96,6 +97,30 @@ namespace Ojb500.EcfLms
             using (var sr = new StreamReader(s))
             {
                 return sr.ReadToEnd();
+            }
+        }
+
+        internal static void CheckForApiError(string json)
+        {
+            if (json.StartsWith("ERROR:", StringComparison.Ordinal))
+                throw new InvalidOperationException(json);
+
+            if (!json.Contains("\"ERROR:"))
+                return;
+
+            using var doc = JsonDocument.Parse(json);
+            if (doc.RootElement.ValueKind != JsonValueKind.Array)
+                return;
+
+            foreach (var element in doc.RootElement.EnumerateArray())
+            {
+                if (element.TryGetProperty("title", out var title) &&
+                    title.GetString() is string t &&
+                    t.StartsWith("ERROR:", StringComparison.Ordinal) &&
+                    !element.TryGetProperty("data", out _))
+                {
+                    throw new InvalidOperationException(t);
+                }
             }
         }
 
@@ -127,6 +152,7 @@ namespace Ojb500.EcfLms
         {
             var stream = await GetJson("table", org, name, ct).ConfigureAwait(false);
             var json = ReadString(stream);
+            CheckForApiError(json);
 
             // The table endpoint returns a different JSON shape for cup competitions:
             // header is an object (round numbers) rather than an array (column names).
@@ -199,6 +225,26 @@ namespace Ojb500.EcfLms
                 s = await GetJson("standings", org, name, ct).ConfigureAwait(false);
             }
             return ReadString(s);
+        }
+
+        async Task<Crosstable> IModel.GetCrosstableAsync(string org, string name, CancellationToken ct)
+        {
+            var stream = await GetJson("standings", org, name, ct).ConfigureAwait(false);
+            var json = ReadString(stream);
+            CheckForApiError(json);
+
+            var results = JsonSerializer.Deserialize<ApiResult<CrosstableEntry>[]>(json);
+            if (results.Length > 1)
+                throw new InvalidOperationException($"Expected 1 result, got {results.Length}");
+            if (results.Length == 0)
+                return default;
+            var r = results[0];
+
+            // Extract round names from header: ["No","Name","Round 1",...,"Total"]
+            var rounds = new string[r.Header.Length - 3];
+            Array.Copy(r.Header, 2, rounds, 0, rounds.Length);
+
+            return new Crosstable { Title = r.Title, Rounds = rounds, Entries = r.Data };
         }
 
         internal static MatchCard ParseMatchCard(MatchApiResult m)

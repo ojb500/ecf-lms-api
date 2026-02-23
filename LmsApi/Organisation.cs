@@ -68,5 +68,10 @@ namespace Ojb500.EcfLms
         {
             return _api.GetTableAsync(_org, internalName, ct);
         }
+
+        internal Task<Crosstable> GetCrosstableInternalAsync(string internalName, CancellationToken ct = default)
+        {
+            return _api.GetCrosstableAsync(_org, internalName, ct);
+        }
     }
 }

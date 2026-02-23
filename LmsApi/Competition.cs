@@ -33,6 +33,7 @@ namespace Ojb500.EcfLms
         private Event[] _events;
         private MatchCard[] _matches;
         private LeagueTable _table;
+        private Crosstable _crosstable;
 
         /// <summary>Returns all fixtures in this competition.</summary>
         public async Task<Event[]> GetEventsAsync(CancellationToken ct = default) {
@@ -70,6 +71,17 @@ namespace Ojb500.EcfLms
             return _table;
         }
 
+
+        /// <summary>Returns the crosstable for this individual tournament.</summary>
+        public async Task<Crosstable> GetCrosstableAsync(CancellationToken ct = default)
+        {
+            if (_crosstable != null)
+                return _crosstable;
+
+            _crosstable = await _org.GetCrosstableInternalAsync(InternalName, ct).ConfigureAwait(false);
+            _crosstable.Competition = this;
+            return _crosstable;
+        }
 
         public override string ToString()
         {
