@@ -10,8 +10,12 @@ namespace Ojb500.EcfLms
     /// A league table containing ranked <see cref="LeagueTableEntry"/> rows.
     /// Implements <see cref="IEnumerable{LeaguePosition}"/> for convenient iteration.
     /// </summary>
-    public class LeagueTable : ApiResult<LeagueTableEntry>, ILeagueTable
+    public class LeagueTable : ILeagueTable
     {
+        public string Title { get; internal set; }
+        public string[] Header { get; internal set; }
+        public LeagueTableEntry[] Data { get; internal set; }
+
         public string Name => Competition?.Name ?? Title;
 
         [JsonIgnore]
@@ -93,6 +97,10 @@ namespace Ojb500.EcfLms
         }
 
         private LeaguePosition MakePosition(int n) => new LeaguePosition(n + 1, Data[n]);
-    }
 
+        public override string ToString()
+        {
+            return $"{Title} ({Data.Length} rows)";
+        }
+    }
 }

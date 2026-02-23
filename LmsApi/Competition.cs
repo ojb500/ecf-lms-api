@@ -69,11 +69,5 @@ namespace Ojb500.EcfLms
 
         /// <summary>The friendly name if set, otherwise <see cref="InternalName"/>.</summary>
         public string Name => _friendlyName ?? InternalName;
-
-        internal MatchCard GetMatchCard(IEvent evt)
-        {
-            var matches = GetMatches();
-            return matches.FirstOrDefault(mc => mc.Left.Name == evt.Home.Name && mc.Right.Name == evt.Away.Name);
-        }
     }
 }

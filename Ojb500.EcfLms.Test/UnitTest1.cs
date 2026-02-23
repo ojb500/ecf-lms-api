@@ -1,4 +1,5 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Linq;
 
 namespace Ojb500.EcfLms.Test
@@ -13,11 +14,9 @@ namespace Ojb500.EcfLms.Test
 
             var org = Source.GetOrganisation(613);
             var comp = org.GetCompetition("Div 2 - Weston Trophy");
-            var roth = org.GetClub("Rotherham", comp);
-            var upc = roth.GetUpcoming().ToArray();
+            var evts = comp.GetEvents().ToArray();
             var mcs = comp.GetMatches().ToArray();
-            var res = roth.GetResults().ToArray();
-            Assert.IsTrue(upc.Length + res.Length > 0);
+            Assert.IsTrue(evts.Length > 0);
             Assert.IsTrue(mcs.Length > 0);
         }
     }

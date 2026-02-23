@@ -1,6 +1,5 @@
 using Ojb500.EcfLms;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace GetLms
@@ -9,21 +8,22 @@ namespace GetLms
     {
         static void Main(string[] args)
         {
-            var api = Api.Default.GetOrganisation(613);
+            var org = Api.Default.GetOrganisation(613);
 
-            var d2 = api.GetCompetition("Div 2 - Weston Trophy");
+            var d2 = org.GetCompetition("Div 2 - Weston Trophy");
             var evts = d2.GetEvents().ToList();
 
-            var club = api.GetClub("Rotherham", d2);
-            var (recent, upc) = (club.GetResults().Take(5).Select(r => r.Event).ToList(),
-     club.GetUpcoming().Take(5).ToList());
+            var now = DateTime.Now;
+            var recent = evts.Where(e => e.DateTime <= now && !e.Result.IsEmpty)
+                .OrderByDescending(e => e.DateTime).Take(5);
+            var upcoming = evts.Where(e => e.DateTime > now).Take(5);
 
             Console.WriteLine("Upcoming matches:");
-            foreach (var f in upc)
+            foreach (var f in upcoming)
             {
                 Console.WriteLine(f);
             }
-            Console.WriteLine("Recent matches:");
+            Console.WriteLine("Recent results:");
             foreach (var f in recent)
             {
                 Console.WriteLine(f);

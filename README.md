@@ -29,21 +29,11 @@ foreach (var pos in summary)
     Console.WriteLine($"{pos.Position}. {pos.Entry.Team.Name} ({pos.Entry.Pts} pts)");
 }
 
-// --- Upcoming fixtures for a club across multiple divisions ---
-var div2 = org.GetCompetition(" Division 2 - Weston Trophy");
-var club = org.GetClub("Rotherham", div1, div2);
-
-foreach (var fixture in club.GetUpcoming().Take(5))
-{
-    Console.WriteLine($"{fixture.DateTime:ddd d MMM}: {fixture.Home} v {fixture.Away} " +
-                      $"({fixture.Competition.Name})");
-}
-
-// --- Recent results ---
-foreach (var (evt, mc) in club.GetResults().Take(5))
-{
-    Console.WriteLine($"{evt.Home} {evt.Result} {evt.Away}");
-}
+// --- Fixtures and results ---
+var events = div1.GetEvents();
+var upcoming = events.Where(e => e.DateTime > DateTime.Now).Take(5);
+var results = events.Where(e => e.DateTime <= DateTime.Now && !e.Result.IsEmpty)
+    .OrderByDescending(e => e.DateTime).Take(5);
 
 // --- Detailed match cards with individual board pairings ---
 foreach (var match in div1.GetMatches().Take(3))
@@ -56,6 +46,17 @@ foreach (var match in div1.GetMatches().Take(3))
                           $"{p.FirstPlayer.FamilyName} ({p.FirstPlayer.Rating.Primary}) " +
                           $"{p.Result.Result} " +
                           $"{p.SecondPlayer.FamilyName} ({p.SecondPlayer.Rating.Primary})");
+    }
+}
+
+// --- All fixtures for a specific club (by club code) ---
+var clubFixtures = org.GetClubEvents("ROT");
+foreach (var comp in clubFixtures)
+{
+    Console.WriteLine($"\n{comp.Title}:");
+    foreach (var evt in comp.Events)
+    {
+        Console.WriteLine($"  {evt.Home} {evt.Result} {evt.Away}");
     }
 }
 

@@ -2,7 +2,7 @@
 
 namespace Ojb500.EcfLms
 {
-    public class ApiResult<T>
+    internal class ApiResult<T>
     {
         [JsonPropertyName("data")]
         public T[] Data { get; set; }

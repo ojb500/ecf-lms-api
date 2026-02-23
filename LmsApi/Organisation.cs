@@ -28,21 +28,6 @@ namespace Ojb500.EcfLms
             return comp;
         }
 
-        /// <summary>
-        /// Creates a <see cref="ClubInfo"/> that aggregates fixtures for a club
-        /// across the named competitions.
-        /// </summary>
-        public ClubInfo GetClub(string name, params string[] competitions)
-        {
-            return new ClubInfo(this, name, competitions);
-        }
-
-        /// <inheritdoc cref="GetClub(string, string[])"/>
-        public ClubInfo GetClub(string name, params Competition[] competitions)
-        {
-            return new ClubInfo(name, competitions);
-        }
-
         public Organisation(IModel api, int orgId)
         {
             _api = api;
@@ -62,7 +47,7 @@ namespace Ojb500.EcfLms
         }
 
         /// <summary>Returns all fixtures for a club, grouped by competition.</summary>
-        public IEnumerable<ApiResult<Event>> GetClubEvents(string clubCode)
+        public IEnumerable<CompetitionEvents> GetClubEvents(string clubCode)
         {
             return _api.GetClubEvents(_org, clubCode);
         }

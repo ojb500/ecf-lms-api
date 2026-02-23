@@ -6,7 +6,7 @@ namespace Ojb500.EcfLms
 {
     /// <summary>A scheduled or completed fixture between two teams.</summary>
 	[JsonConverter(typeof(EventApiConverter))]
-    public class Event : IEvent
+    public class Event
     {
         public Event(Team home, string result, Team away, string matchLink, DateTime? dt, Competition competition)
             :this(home, new Score(result), away, matchLink, dt, competition)

@@ -137,9 +137,13 @@ namespace Ojb500.EcfLms
             }
         }
 
-        IEnumerable<ApiResult<Event>> IModel.GetClubEvents(string org, string clubCode)
+        IEnumerable<CompetitionEvents> IModel.GetClubEvents(string org, string clubCode)
         {
-            return Get<ApiResult<Event>>("club", org, clubCode);
+            var results = Get<ApiResult<Event>>("club", org, clubCode);
+            foreach (var r in results)
+            {
+                yield return new CompetitionEvents(r.Title, r.Data);
+            }
         }
 
         Dictionary<string, string> IModel.GetSeasons(string org)
