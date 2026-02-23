@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms.Json
 {
-    public class EventApiConverter : JsonConverter<Event>
+    internal class EventApiConverter : JsonConverter<Event>
     {
         private static readonly string[] DateFormats = new[]
         {

@@ -23,14 +23,14 @@ namespace Ojb500.EcfLms
             Competition = competition;
         }
 
-        public Team Home { get; set; }
-        public Score Result { get; set; }
-        public Team Away { get; set; }
-        public string MatchLink { get; set; }
-        public DateTime? DateTime { get; set; }
+        public Team Home { get; }
+        public Score Result { get; }
+        public Team Away { get; }
+        public string MatchLink { get; }
+        public DateTime? DateTime { get; }
 
         [JsonIgnore]
-        public Competition Competition { get; set; }
+        public Competition Competition { get; internal set; }
         public override string ToString() => $"{Home} {Result} {Away} ({(DateTime.HasValue ? DateTime.Value.ToShortDateString() : "Postponed")})";
     }
 }

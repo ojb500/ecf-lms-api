@@ -4,7 +4,7 @@ namespace Ojb500.EcfLms
 {
     public struct Points
     {
-        public int PointsX2 { get; set; }
+        public int PointsX2 { get; }
 
         public static bool TryParse(ReadOnlySpan<char> readOnlySpan, out Points points, out int charsConsumed)
         {

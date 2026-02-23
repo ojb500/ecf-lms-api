@@ -360,6 +360,25 @@ namespace Ojb500.EcfLms.Test
         }
 
         [TestMethod]
+        public void ParseTableAsLeagueTable()
+        {
+            var json = ReadSample("table-div1.json");
+            var results = JsonSerializer.Deserialize<ApiResult<LeagueTableEntry>[]>(json);
+            Assert.AreEqual(1, results.Length);
+            var r = results[0];
+            var table = new LeagueTable { Title = r.Title, Header = r.Header, Data = r.Data };
+
+            Assert.AreEqual("Div 1 - Davy Trophy", table.Name);
+            Assert.AreEqual(8, table.Data.Length);
+
+            // Verify IEnumerable<LeaguePosition> works
+            var positions = table.ToList();
+            Assert.AreEqual(8, positions.Count);
+            Assert.AreEqual(1, positions[0].Position);
+            Assert.AreEqual("Worksop A", positions[0].Entry.Team.Name);
+        }
+
+        [TestMethod]
         public void ParseTableResponse_Points()
         {
             var table = ParseTable(ReadSample("table-div1.json"));

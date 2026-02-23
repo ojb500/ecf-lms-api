@@ -4,8 +4,8 @@ namespace Ojb500.EcfLms
 {
     public struct Team
     {
-        public string Name { get; set; }
-        public string Url { get; set; }
+        public string Name { get; }
+        public string Url { get; }
 
 
         public Team(string name, string url)

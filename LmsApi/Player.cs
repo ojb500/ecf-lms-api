@@ -77,9 +77,9 @@ namespace Ojb500.EcfLms
             FamilyName = familyName;
             Rating = rating;
         }
-        public string GivenName { get; set; }
-        public string FamilyName { get; set; }
-        public Rating Rating { get; set; }
+        public string GivenName { get; }
+        public string FamilyName { get; }
+        public Rating Rating { get; }
         public bool IsDefault => FamilyName == "Default" && string.IsNullOrEmpty(GivenName);
         public override string ToString()
         {

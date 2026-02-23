@@ -5,13 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms.Json
 {
-    public class LeagueTableEntryApiConverter : JsonConverter<LeagueTableEntry>
+    internal class LeagueTableEntryApiConverter : JsonConverter<LeagueTableEntry>
     {
-        public override bool CanConvert(Type objectType)
-        {
-            return objectType == typeof(LeagueTableEntry);
-        }
-
 		private static string NodeAsString(JsonNode node)
 		{
 			var val = node.AsValue();

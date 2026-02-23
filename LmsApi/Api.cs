@@ -13,7 +13,7 @@ namespace Ojb500.EcfLms
 {
     public class Api : IModel
     {
-        public static Api Default = new Api();
+        public static readonly Api Default = new Api();
 
 
         public Api() : this("https://lms.englishchess.org.uk/lms/lmsrest/league/")
@@ -107,7 +107,13 @@ namespace Ojb500.EcfLms
 
         LeagueTable IModel.GetTable(string org, string name)
         {
-            return GetOne<LeagueTable>("table", org, name);
+            var results = Get<ApiResult<LeagueTableEntry>>("table", org, name);
+            if (results.Length > 1)
+                throw new InvalidOperationException($"Expected 1 result, got {results.Length}");
+            if (results.Length == 0)
+                return default;
+            var r = results[0];
+            return new LeagueTable { Title = r.Title, Header = r.Header, Data = r.Data };
         }
 
         IEnumerable<Event> IModel.GetEvents(string org, string name)

@@ -5,10 +5,6 @@ namespace Ojb500.EcfLms
 {
     public class MatchCard
     {
-        public MatchCard()
-        {
-
-        }
         internal MatchCard(Team left, Team right, DateTime? date, Pairing[] pairings, Adjustment[] adjustments = null)
         {
             Left = left;
@@ -18,11 +14,11 @@ namespace Ojb500.EcfLms
             Adjustments = adjustments ?? Array.Empty<Adjustment>();
         }
 
-        public Team Left { get; set; }
-        public Team Right { get; set; }
-        public DateTime? Date { get; set; }
-        public Pairing[] Pairings { get; set; }
-        public Adjustment[] Adjustments { get; set; } = Array.Empty<Adjustment>();
+        public Team Left { get; }
+        public Team Right { get; }
+        public DateTime? Date { get; }
+        public Pairing[] Pairings { get; }
+        public Adjustment[] Adjustments { get; }
         public override string ToString()
         {
             var s = $"{Left.Abbreviated} v {Right.Abbreviated}";

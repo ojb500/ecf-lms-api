@@ -7,8 +7,8 @@ namespace Ojb500.EcfLms
 {
     public struct Score
     { 
-        public Points Home { get; set; }
-        public Points Away { get; set; }
+        public Points Home { get; }
+        public Points Away { get; }
 
         [JsonIgnore]
         public bool IsEmpty => (Home + Away).PointsX2 == 0;

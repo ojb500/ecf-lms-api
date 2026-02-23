@@ -6,11 +6,7 @@
     <LangVersion>preview</LangVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="System.Memory" Version="4.5.3" />
-  </ItemGroup>
-
-  <ItemGroup>
+<ItemGroup>
     <InternalsVisibleTo Include="Ojb500.EcfLms.Test" />
   </ItemGroup>
 

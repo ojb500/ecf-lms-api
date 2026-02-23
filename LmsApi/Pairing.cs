@@ -2,10 +2,6 @@
 {
     public class Pairing
     {
-        public Pairing()
-        {
-
-        }
         internal Pairing(int board, bool firstPlayerWhite, Player firstPlayer, Player secondPlayer, GameResult result)
         {
             Board = board;
@@ -14,14 +10,14 @@
             SecondPlayer = secondPlayer;
             Result = result;
         }
-        public int Board { get; set; }
-        public bool FirstPlayerWhite { get; set; }
+        public int Board { get; }
+        public bool FirstPlayerWhite { get; }
 
-        public Player FirstPlayer { get; set; }
+        public Player FirstPlayer { get; }
 
-        public Player SecondPlayer { get; set; }
+        public Player SecondPlayer { get; }
 
-        public GameResult Result { get; set; }
+        public GameResult Result { get; }
 
         public override string ToString()
         {
