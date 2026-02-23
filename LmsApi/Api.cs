@@ -125,7 +125,28 @@ namespace Ojb500.EcfLms
 
         async Task<LeagueTable> IModel.GetTableAsync(string org, string name, CancellationToken ct)
         {
-            var results = await GetAsync<ApiResult<LeagueTableEntry>>("table", org, name, ct).ConfigureAwait(false);
+            var stream = await GetJson("table", org, name, ct).ConfigureAwait(false);
+            var json = ReadString(stream);
+
+            // The table endpoint returns a different JSON shape for cup competitions:
+            // header is an object (round numbers) rather than an array (column names).
+            // Detect this and throw a clear error rather than a cryptic deserialization failure.
+            using (var doc = JsonDocument.Parse(json))
+            {
+                foreach (var element in doc.RootElement.EnumerateArray())
+                {
+                    if (element.TryGetProperty("header", out var header) &&
+                        header.ValueKind == JsonValueKind.Object)
+                    {
+                        var title = element.TryGetProperty("title", out var t) ? t.GetString() : name;
+                        throw new InvalidOperationException(
+                            $"'{title}' is a cup competition and does not have a league table. " +
+                            $"The table endpoint returns a knockout draw for this competition.");
+                    }
+                }
+            }
+
+            var results = JsonSerializer.Deserialize<ApiResult<LeagueTableEntry>[]>(json);
             if (results.Length > 1)
                 throw new InvalidOperationException($"Expected 1 result, got {results.Length}");
             if (results.Length == 0)

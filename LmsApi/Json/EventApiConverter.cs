@@ -46,9 +46,10 @@ namespace Ojb500.EcfLms.Json
 
 			var leftClub = Team.Parse(ev[0].AsValue().GetValue<string>());
 			var result = ev[1].AsValue().GetValue<string>();
-			var rightClub = Team.Parse(ev[2].AsValue().GetValue<string>());
-			var dts = ev[3].AsValue().GetValue<string>();
-			var time = ev[4].AsValue().GetValue<string>();
+			var rightNode = ev[2];
+			var rightClub = rightNode is null ? default : Team.Parse(rightNode.AsValue().GetValue<string>());
+			var dts = ev[3]?.AsValue().GetValue<string>();
+			var time = ev[4]?.AsValue().GetValue<string>();
 			var dt = ParseDT(dts, time);
 			return new Event(leftClub, result, rightClub, null, dt, null);
 		}

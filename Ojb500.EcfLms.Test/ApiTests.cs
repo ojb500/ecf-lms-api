@@ -25,16 +25,35 @@ namespace Ojb500.EcfLms.Test
             ["standings"] = "standings.json",
         };
 
-        public CancellationToken LastCancellationToken { get; private set; }
-
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        private static readonly Dictionary<(string, string), string> NamedPathToFile = new Dictionary<(string, string), string>
         {
-            LastCancellationToken = cancellationToken;
+            [("table", "Richardson Cup")] = "table-cup.json",
+            [("event", "Richardson Cup")] = "event-cup.json",
+            [("match", "Richardson Cup")] = "match-cup.json",
+        };
 
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
             var path = request.RequestUri.AbsolutePath.Split('/').Last();
-            if (!PathToFile.TryGetValue(path, out var file))
+
+            string name = null;
+            if (request.Content != null)
             {
-                return Task.FromResult(new HttpResponseMessage(HttpStatusCode.NotFound));
+                var body = await request.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
+                using var doc = JsonDocument.Parse(body);
+                if (doc.RootElement.TryGetProperty("name", out var nameProp) &&
+                    nameProp.ValueKind == JsonValueKind.String)
+                {
+                    name = nameProp.GetString();
+                }
+            }
+
+            string file = null;
+            if (name != null)
+                NamedPathToFile.TryGetValue((path, name), out file);
+            if (file == null && !PathToFile.TryGetValue(path, out file))
+            {
+                return new HttpResponseMessage(HttpStatusCode.NotFound);
             }
 
             var json = File.ReadAllText(Path.Combine("Samples", file));
@@ -42,7 +61,7 @@ namespace Ojb500.EcfLms.Test
             {
                 Content = new StringContent(json, Encoding.UTF8, "application/json")
             };
-            return Task.FromResult(response);
+            return response;
         }
     }
 
@@ -189,6 +208,74 @@ namespace Ojb500.EcfLms.Test
             var table1 = await comp.GetTableAsync();
             var table2 = await comp.GetTableAsync();
             Assert.AreSame(table1, table2);
+        }
+
+        // --- Cup competition tests ---
+
+        [TestMethod]
+        public async Task GetTableAsync_Cup_ThrowsMeaningfulException()
+        {
+            IModel model = _api;
+
+            var ex = await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => model.GetTableAsync("613", "Richardson Cup"));
+
+            StringAssert.Contains(ex.Message, "Richardson Cup");
+            StringAssert.Contains(ex.Message, "cup");
+        }
+
+        [TestMethod]
+        public async Task GetEventsAsync_Cup_ReturnsFixtures()
+        {
+            IModel model = _api;
+            var events = await model.GetEventsAsync("613", "Richardson Cup");
+
+            Assert.IsNotNull(events);
+            Assert.AreEqual(5, events.Length);
+            Assert.AreEqual("SASCA 1", events[0].Home.Name);
+            Assert.AreEqual("Sheffield Deaf", events[0].Away.Name);
+        }
+
+        [TestMethod]
+        public async Task GetEventsAsync_Cup_ByeFixtureHasDefaultAwayTeam()
+        {
+            IModel model = _api;
+            var events = await model.GetEventsAsync("613", "Richardson Cup");
+
+            // The bye fixture has null away team in the JSON
+            var bye = events[3];
+            Assert.AreEqual("Sheffield Nomads 1", bye.Home.Name);
+            Assert.IsNull(bye.Away.Name);
+        }
+
+        [TestMethod]
+        public async Task GetMatchCardsAsync_Cup_ReturnsMatchCards()
+        {
+            IModel model = _api;
+            var matches = await model.GetMatchCardsAsync("613", "Richardson Cup");
+
+            Assert.IsNotNull(matches);
+            Assert.AreEqual(2, matches.Length);
+            Assert.AreEqual("SASCA 1", matches[0].Left.Name);
+            Assert.AreEqual("Sheffield Deaf", matches[0].Right.Name);
+            Assert.AreEqual(6, matches[0].Pairings.Length);
+        }
+
+        [TestMethod]
+        public async Task Competition_Cup_EventsAndMatchesWork_TableThrows()
+        {
+            IModel model = _api;
+            var org = model.GetOrganisation(613);
+            var cup = org.GetCompetition("Richardson Cup");
+
+            var events = await cup.GetEventsAsync();
+            Assert.AreEqual(5, events.Length);
+
+            var matches = await cup.GetMatchesAsync();
+            Assert.AreEqual(2, matches.Length);
+
+            await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => cup.GetTableAsync());
         }
     }
 }
