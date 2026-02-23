@@ -320,14 +320,19 @@ namespace Ojb500.EcfLms.Test
 
             // Round 1: "1 (b22)" - win with black against 22
             Assert.AreEqual(2, entry.Results[0].Score.PointsX2); // 1 point
-            Assert.IsFalse(entry.Results[0].IsWhite);
+            Assert.AreEqual(false, entry.Results[0].IsWhite);
             Assert.AreEqual(22, entry.Results[0].OpponentNumber);
             Assert.IsTrue(entry.Results[0].IsPlayed);
 
             // Round 2: "1 (w13)" - win with white against 13
             Assert.AreEqual(2, entry.Results[1].Score.PointsX2);
-            Assert.IsTrue(entry.Results[1].IsWhite);
+            Assert.AreEqual(true, entry.Results[1].IsWhite);
             Assert.AreEqual(13, entry.Results[1].OpponentNumber);
+
+            // Look up opponent by seed number via indexer
+            var opponent = crosstable[entry.Results[0].OpponentNumber];
+            Assert.AreEqual(22, opponent.SeedNumber);
+            Assert.IsNotNull(opponent.Name);
         }
 
         [TestMethod]
@@ -341,18 +346,21 @@ namespace Ojb500.EcfLms.Test
             var entry = crosstable.Entries[16];
             Assert.AreEqual("Colin Reid", entry.Name);
 
-            // Round 1: default win
+            // Round 1: default win — no colour
             Assert.IsTrue(entry.Results[0].IsDefault);
             Assert.IsTrue(entry.Results[0].IsPlayed);
+            Assert.IsNull(entry.Results[0].IsWhite);
             Assert.AreEqual(2, entry.Results[0].Score.PointsX2);
 
-            // Round 3: half point bye
+            // Round 3: half point bye — no colour
             Assert.IsTrue(entry.Results[2].IsHalfPointBye);
             Assert.IsTrue(entry.Results[2].IsPlayed);
+            Assert.IsNull(entry.Results[2].IsWhite);
             Assert.AreEqual(1, entry.Results[2].Score.PointsX2);
 
-            // Round 4: unplayed
+            // Round 4: unplayed — no colour
             Assert.IsFalse(entry.Results[3].IsPlayed);
+            Assert.IsNull(entry.Results[3].IsWhite);
         }
 
         [TestMethod]

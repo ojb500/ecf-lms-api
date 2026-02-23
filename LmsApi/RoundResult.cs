@@ -8,13 +8,14 @@ namespace Ojb500.EcfLms
     public readonly struct RoundResult
     {
         public Points Score { get; }
-        public bool IsWhite { get; }
+        /// <summary>Whether the player had white. Null for byes, defaults, and unplayed rounds.</summary>
+        public bool? IsWhite { get; }
         public int OpponentNumber { get; }
         public bool IsPlayed { get; }
         public bool IsDefault { get; }
         public bool IsHalfPointBye { get; }
 
-        public RoundResult(Points score, bool isWhite, int opponentNumber, bool isPlayed, bool isDefault, bool isHalfPointBye)
+        public RoundResult(Points score, bool? isWhite, int opponentNumber, bool isPlayed, bool isDefault, bool isHalfPointBye)
         {
             Score = score;
             IsWhite = isWhite;
@@ -47,13 +48,13 @@ namespace Ojb500.EcfLms
             inner = inner.Trim();
 
             if (inner.Length == 0)
-                return new RoundResult(score, false, 0, false, false, false);
+                return new RoundResult(score, null, 0, false, false, false);
 
             if (inner.Equals("def".AsSpan(), StringComparison.OrdinalIgnoreCase))
-                return new RoundResult(score, false, 0, true, true, false);
+                return new RoundResult(score, null, 0, true, true, false);
 
             if (inner.Equals("HPB".AsSpan(), StringComparison.OrdinalIgnoreCase))
-                return new RoundResult(score, false, 0, true, false, true);
+                return new RoundResult(score, null, 0, true, false, true);
 
             bool isWhite = inner[0] == 'w';
             int opponent = 0;
@@ -71,7 +72,7 @@ namespace Ojb500.EcfLms
             if (!IsPlayed && Score.PointsX2 == 0) return "-";
             if (IsDefault) return $"{Score} (def)";
             if (IsHalfPointBye) return $"{Score} (HPB)";
-            var colour = IsWhite ? "w" : "b";
+            var colour = IsWhite == true ? "w" : "b";
             return $"{Score} ({colour}{OpponentNumber})";
         }
     }
