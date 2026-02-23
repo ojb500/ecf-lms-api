@@ -1,4 +1,4 @@
-﻿using Ojb500.EcfLms.Json;
+using Ojb500.EcfLms.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,8 +11,14 @@ using System.Net.Http.Json;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>
+    /// Client for the ECF League Management System REST API.
+    /// Use <see cref="Default"/> for the standard production endpoint,
+    /// or construct with a custom base address for testing.
+    /// </summary>
     public class Api : IModel
     {
+        /// <summary>Shared client pointing at the production ECF LMS endpoint.</summary>
         public static readonly Api Default = new Api();
 
 

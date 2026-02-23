@@ -1,10 +1,9 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>An ECF rating value, with an optional secondary (previous) rating.</summary>
     public struct Rating
     {
         public int Primary { get; }
@@ -16,6 +15,10 @@ namespace Ojb500.EcfLms
             Secondary = secondary;
         }
 
+        /// <summary>
+        /// Parses an ECF rating string such as "2081 (2031)" or "0000 (1751)".
+        /// A primary value of 0000 is treated as unrated.
+        /// </summary>
         public Rating(string value)
         {
             // New API format: "2081 (2031)" — current rating, then previous in parens.
@@ -45,6 +48,7 @@ namespace Ojb500.EcfLms
             Primary == 0 && !Secondary.HasValue ? "ug" : Primary.ToString();
     }
 
+    /// <summary>A chess player identified by name and ECF rating.</summary>
     public struct Player
     {
         public Player(string name, Rating rating)

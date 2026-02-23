@@ -1,8 +1,9 @@
-﻿using Ojb500.EcfLms.Json;
+using Ojb500.EcfLms.Json;
 using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>A single row in a league table: team record, board points for/against, and match points.</summary>
 	[JsonConverter(typeof(LeagueTableEntryApiConverter))]
     public class LeagueTableEntry
     {
@@ -19,12 +20,20 @@ namespace Ojb500.EcfLms
         }
 
         public Team Team { get; }
+
+        /// <summary>Matches played.</summary>
         public int P { get; }
+        /// <summary>Matches won.</summary>
         public int W { get; }
+        /// <summary>Matches drawn.</summary>
         public int D { get; }
+        /// <summary>Matches lost.</summary>
         public int L { get; }
+        /// <summary>Board points scored (for).</summary>
         public Points F { get; }
+        /// <summary>Board points conceded (against).</summary>
         public Points A { get; }
+        /// <summary>Match points.</summary>
         public Points Pts { get; }
         public override string ToString()
         {

@@ -1,9 +1,14 @@
-﻿using System;
+using System;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>
+    /// A chess match point value that supports half-points (e.g. 4½).
+    /// Stored internally as double the actual value to avoid floating point.
+    /// </summary>
     public struct Points
     {
+        /// <summary>The point value multiplied by two (e.g. 4½ is stored as 9).</summary>
         public int PointsX2 { get; }
 
         public static bool TryParse(ReadOnlySpan<char> readOnlySpan, out Points points, out int charsConsumed)

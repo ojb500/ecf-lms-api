@@ -1,28 +1,72 @@
 # ecf-lms-api
 C# .NET library for talking to the English Chess Federation League Management System.
 
-## nuget
-
-Feed URL: `https://pkgs.dev.azure.com/ojb500/ecf-lms-api/_packaging/ecflms-api/nuget/v3/index.json`
-
 Package: `Ojb500.EcfLms`
 
-## usage
+## Usage
 
-```cs
+```csharp
 using Ojb500.EcfLms;
 
-var sheffieldChess = Api.Default.GetOrganisation(28757);
-var division2 = sheffieldChess.GetCompetition(" Division 2 - Weston Trophy"); 
-// Competition name needs to match the one on the ECF LMS site exactly, including leading/trailing whitespace...
-var division3 = sheffieldChess.GetCompetition(" Divison 3 - Batley-Meek Memorial Trophy"); // ..and any mis-spellings
+// Connect to the ECF LMS for your organisation
+var org = Api.Default.GetOrganisation(28757); // e.g. Sheffield & District Chess Association
 
-var table = division2.GetTable();
+// --- League table ---
+var div1 = org.GetCompetition(" Division 1 - Davy Trophy");
+var table = div1.GetTable();
 
-var club = new ClubInfo("Rotherham", division2, division3); // Pass all competitions you care about
-foreach (var fixture in club.GetUpcoming().Take(5))
+foreach (var pos in table)
 {
-  Console.WriteLine(fixture);
+    Console.WriteLine($"{pos.Position}. {pos.Entry.Team.Name,-30} " +
+                      $"P{pos.Entry.P} W{pos.Entry.W} D{pos.Entry.D} L{pos.Entry.L}  " +
+                      $"Pts: {pos.Entry.Pts}");
 }
 
+// --- Summarised table for your club (top + neighbourhood) ---
+var summary = table.SummarizeFor("Rotherham", maxRows: 5);
+foreach (var pos in summary)
+{
+    Console.WriteLine($"{pos.Position}. {pos.Entry.Team.Name} ({pos.Entry.Pts} pts)");
+}
+
+// --- Upcoming fixtures for a club across multiple divisions ---
+var div2 = org.GetCompetition(" Division 2 - Weston Trophy");
+var club = org.GetClub("Rotherham", div1, div2);
+
+foreach (var fixture in club.GetUpcoming().Take(5))
+{
+    Console.WriteLine($"{fixture.DateTime:ddd d MMM}: {fixture.Home} v {fixture.Away} " +
+                      $"({fixture.Competition.Name})");
+}
+
+// --- Recent results ---
+foreach (var (evt, mc) in club.GetResults().Take(5))
+{
+    Console.WriteLine($"{evt.Home} {evt.Result} {evt.Away}");
+}
+
+// --- Detailed match cards with individual board pairings ---
+foreach (var match in div1.GetMatches().Take(3))
+{
+    Console.WriteLine($"\n{match.Left} v {match.Right}");
+    foreach (var p in match.Pairings)
+    {
+        var colour = p.FirstPlayerWhite ? "W" : "B";
+        Console.WriteLine($"  Bd {p.Board} ({colour}): " +
+                          $"{p.FirstPlayer.FamilyName} ({p.FirstPlayer.Rating.Primary}) " +
+                          $"{p.Result.Result} " +
+                          $"{p.SecondPlayer.FamilyName} ({p.SecondPlayer.Rating.Primary})");
+    }
+}
+
+// --- Browse seasons and competitions ---
+var seasons = org.GetSeasonsWithEvents();
+foreach (var (id, season) in seasons)
+{
+    Console.WriteLine($"\n{season.Name}:");
+    foreach (var (eventId, name) in season.Events)
+    {
+        Console.WriteLine($"  {name} (id: {eventId})");
+    }
+}
 ```

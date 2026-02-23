@@ -1,7 +1,8 @@
-﻿using System.Text.Json.Serialization;
+using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>A chess team identified by name, with an optional URL to the ECF LMS page.</summary>
     public struct Team
     {
         public string Name { get; }
@@ -21,6 +22,7 @@ namespace Ojb500.EcfLms
 
         public override string ToString() => Abbreviated;
 
+        /// <summary>A shortened version of the team name for display.</summary>
         [JsonIgnore]
         public string Abbreviated
         {

@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System;
 using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>A team match score (e.g. "4½–1½").</summary>
     public struct Score
-    { 
+    {
         public Points Home { get; }
         public Points Away { get; }
 

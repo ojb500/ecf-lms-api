@@ -15,7 +15,7 @@ namespace GetLms
             var evts = d2.GetEvents().ToList();
 
             var club = api.GetClub("Rotherham", d2);
-            var (recent, upc) = (club.GetResults().Take(5).ToList(),
+            var (recent, upc) = (club.GetResults().Take(5).Select(r => r.Event).ToList(),
      club.GetUpcoming().Take(5).ToList());
 
             Console.WriteLine("Upcoming matches:");

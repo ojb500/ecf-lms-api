@@ -3,6 +3,10 @@ using System.Linq;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>
+    /// A detailed match card showing board-by-board pairings between two teams,
+    /// plus any score adjustments.
+    /// </summary>
     public class MatchCard
     {
         internal MatchCard(Team left, Team right, DateTime? date, Pairing[] pairings, Adjustment[] adjustments = null)
@@ -30,6 +34,7 @@ namespace Ojb500.EcfLms
         }
     }
 
+    /// <summary>A score adjustment applied to a match (e.g. penalty points).</summary>
     public readonly struct Adjustment
     {
         public Score Score { get; }

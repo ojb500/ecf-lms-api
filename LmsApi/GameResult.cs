@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Text.RegularExpressions;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>The result of an individual board game, including whether it was a default.</summary>
     public readonly struct GameResult
     {
         public Result Result => _result;
@@ -38,7 +39,7 @@ namespace Ojb500.EcfLms
         internal static GameResult Parse(string v)
         {
             var match = _trimmer.Matches(v);
-            
+
             if (match.Count == 0)
             {
                 return default;

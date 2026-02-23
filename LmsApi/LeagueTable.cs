@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +6,10 @@ using System.Text.Json.Serialization;
 
 namespace Ojb500.EcfLms
 {
+    /// <summary>
+    /// A league table containing ranked <see cref="LeagueTableEntry"/> rows.
+    /// Implements <see cref="IEnumerable{LeaguePosition}"/> for convenient iteration.
+    /// </summary>
     public class LeagueTable : ApiResult<LeagueTableEntry>, ILeagueTable
     {
         public string Name => Competition?.Name ?? Title;
@@ -21,6 +25,10 @@ namespace Ojb500.EcfLms
             }
         }
 
+        /// <summary>
+        /// Returns a condensed view of the table showing the top team
+        /// and the neighbourhood around the specified club.
+        /// </summary>
         public ILeagueTable SummarizeFor(string clubPrefix, int maxRows = 5, string name = null)
         {
             var list = SummarizeForInternal(clubPrefix, maxRows).ToList();
