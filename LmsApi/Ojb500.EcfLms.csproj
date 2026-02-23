@@ -2,9 +2,23 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
-    <Version>0.1.0</Version>
+    <Version>1.0.0</Version>
     <LangVersion>preview</LangVersion>
+
+    <PackageId>Ojb500.EcfLms</PackageId>
+    <Authors>ojb500</Authors>
+    <Description>C# client library for the English Chess Federation League Management System (LMS) REST API. Parse league tables, fixtures, match cards, pairings, and standings.</Description>
+    <PackageTags>chess;ecf;lms;league;english-chess-federation</PackageTags>
+    <PackageProjectUrl>https://github.com/ojb500/ecf-lms-api</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/ojb500/ecf-lms-api.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
 
 <ItemGroup>
     <InternalsVisibleTo Include="Ojb500.EcfLms.Test" />
