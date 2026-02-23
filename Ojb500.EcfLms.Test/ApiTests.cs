@@ -14,23 +14,14 @@ namespace Ojb500.EcfLms.Test
 {
     internal class SampleHttpHandler : HttpMessageHandler
     {
-        private static readonly Dictionary<string, string> PathToFile = new Dictionary<string, string>
-        {
-            ["table"] = "table-div1.json",
-            ["event"] = "event-excerpt.json",
-            ["match"] = "match-excerpt.json",
-            ["club"] = "club-rotherham.json",
-            ["seasons"] = "seasons.json",
-            ["seasonsWithEvents"] = "seasonsWithEvents.json",
-            ["standings"] = "standings.json",
-        };
+        private readonly Dictionary<string, string> _defaults = new();
+        private readonly Dictionary<(string, string), string> _named = new();
 
-        private static readonly Dictionary<(string, string), string> NamedPathToFile = new Dictionary<(string, string), string>
-        {
-            [("table", "Richardson Cup")] = "table-cup.json",
-            [("event", "Richardson Cup")] = "event-cup.json",
-            [("match", "Richardson Cup")] = "match-cup.json",
-        };
+        public void Map(string endpoint, string sampleFile)
+            => _defaults[endpoint] = sampleFile;
+
+        public void Map(string endpoint, string name, string sampleFile)
+            => _named[(endpoint, name)] = sampleFile;
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
@@ -50,8 +41,8 @@ namespace Ojb500.EcfLms.Test
 
             string file = null;
             if (name != null)
-                NamedPathToFile.TryGetValue((path, name), out file);
-            if (file == null && !PathToFile.TryGetValue(path, out file))
+                _named.TryGetValue((path, name), out file);
+            if (file == null && !_defaults.TryGetValue(path, out file))
             {
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
             }
@@ -69,7 +60,7 @@ namespace Ojb500.EcfLms.Test
     public class ApiTests
     {
         private SampleHttpHandler _handler;
-        private Api _api;
+        private IModel _api;
 
         [TestInitialize]
         public void Setup()
@@ -81,8 +72,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetTableAsync_ReturnsLeagueTable()
         {
-            IModel model = _api;
-            var table = await model.GetTableAsync("613", "Div 1 - Davy Trophy");
+            _handler.Map("table", "table-div1.json");
+
+            var table = await _api.GetTableAsync("613", "Div 1 - Davy Trophy");
 
             Assert.IsNotNull(table);
             Assert.AreEqual("Div 1 - Davy Trophy", table.Name);
@@ -93,8 +85,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetEventsAsync_ReturnsEvents()
         {
-            IModel model = _api;
-            var events = await model.GetEventsAsync("613", "Div 1 - Davy Trophy");
+            _handler.Map("event", "event-excerpt.json");
+
+            var events = await _api.GetEventsAsync("613", "Div 1 - Davy Trophy");
 
             Assert.IsNotNull(events);
             Assert.AreEqual(4, events.Length);
@@ -105,8 +98,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetMatchCardsAsync_ReturnsMatchCards()
         {
-            IModel model = _api;
-            var matches = await model.GetMatchCardsAsync("613", "Div 1 - Davy Trophy");
+            _handler.Map("match", "match-excerpt.json");
+
+            var matches = await _api.GetMatchCardsAsync("613", "Div 1 - Davy Trophy");
 
             Assert.IsNotNull(matches);
             Assert.AreEqual(5, matches.Length);
@@ -118,8 +112,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetMatchCardsAsync_ParsesAdjustments()
         {
-            IModel model = _api;
-            var matches = await model.GetMatchCardsAsync("613", "Div 1 - Davy Trophy");
+            _handler.Map("match", "match-excerpt.json");
+
+            var matches = await _api.GetMatchCardsAsync("613", "Div 1 - Davy Trophy");
 
             // The last match (Ecclesall B v SASCA B) has an adjustment row
             var lastMatch = matches[4];
@@ -129,8 +124,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetClubEventsAsync_ReturnsCompetitionEvents()
         {
-            IModel model = _api;
-            var clubEvents = await model.GetClubEventsAsync("613", "rotherham");
+            _handler.Map("club", "club-rotherham.json");
+
+            var clubEvents = await _api.GetClubEventsAsync("613", "rotherham");
 
             Assert.IsNotNull(clubEvents);
             Assert.AreEqual(1, clubEvents.Length);
@@ -141,8 +137,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetSeasonsAsync_ReturnsDictionary()
         {
-            IModel model = _api;
-            var seasons = await model.GetSeasonsAsync("613");
+            _handler.Map("seasons", "seasons.json");
+
+            var seasons = await _api.GetSeasonsAsync("613");
 
             Assert.IsNotNull(seasons);
             Assert.IsTrue(seasons.Count > 0);
@@ -152,8 +149,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetSeasonsWithEventsAsync_ReturnsDictionary()
         {
-            IModel model = _api;
-            var seasons = await model.GetSeasonsWithEventsAsync("613");
+            _handler.Map("seasonsWithEvents", "seasonsWithEvents.json");
+
+            var seasons = await _api.GetSeasonsWithEventsAsync("613");
 
             Assert.IsNotNull(seasons);
             Assert.IsTrue(seasons.Count > 0);
@@ -164,19 +162,22 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task CancellationToken_IsPropagated()
         {
-            IModel model = _api;
+
             using var cts = new CancellationTokenSource();
             cts.Cancel();
 
             await Assert.ThrowsExceptionAsync<TaskCanceledException>(
-                () => model.GetTableAsync("613", "test", cts.Token));
+                () => _api.GetTableAsync("613", "test", cts.Token));
         }
 
         [TestMethod]
         public async Task Organisation_Competition_Chain()
         {
-            IModel model = _api;
-            var org = model.GetOrganisation(613);
+            _handler.Map("event", "event-excerpt.json");
+            _handler.Map("table", "table-div1.json");
+            _handler.Map("match", "match-excerpt.json");
+
+            var org = _api.GetOrganisation(613);
             var comp = org.GetCompetition("Div 1 - Davy Trophy");
 
             var events = await comp.GetEventsAsync();
@@ -193,8 +194,11 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task Competition_CachesResults()
         {
-            IModel model = _api;
-            var org = model.GetOrganisation(613);
+            _handler.Map("event", "event-excerpt.json");
+            _handler.Map("table", "table-div1.json");
+            _handler.Map("match", "match-excerpt.json");
+
+            var org = _api.GetOrganisation(613);
             var comp = org.GetCompetition("Div 1 - Davy Trophy");
 
             var events1 = await comp.GetEventsAsync();
@@ -215,10 +219,11 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetTableAsync_Cup_ThrowsMeaningfulException()
         {
-            IModel model = _api;
+            _handler.Map("table", "Richardson Cup", "table-cup.json");
+
 
             var ex = await Assert.ThrowsExceptionAsync<InvalidOperationException>(
-                () => model.GetTableAsync("613", "Richardson Cup"));
+                () => _api.GetTableAsync("613", "Richardson Cup"));
 
             StringAssert.Contains(ex.Message, "Richardson Cup");
             StringAssert.Contains(ex.Message, "cup");
@@ -227,8 +232,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetEventsAsync_Cup_ReturnsFixtures()
         {
-            IModel model = _api;
-            var events = await model.GetEventsAsync("613", "Richardson Cup");
+            _handler.Map("event", "Richardson Cup", "event-cup.json");
+
+            var events = await _api.GetEventsAsync("613", "Richardson Cup");
 
             Assert.IsNotNull(events);
             Assert.AreEqual(5, events.Length);
@@ -239,8 +245,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetEventsAsync_Cup_ByeFixtureHasDefaultAwayTeam()
         {
-            IModel model = _api;
-            var events = await model.GetEventsAsync("613", "Richardson Cup");
+            _handler.Map("event", "Richardson Cup", "event-cup.json");
+
+            var events = await _api.GetEventsAsync("613", "Richardson Cup");
 
             // The bye fixture has null away team in the JSON
             var bye = events[3];
@@ -251,8 +258,9 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task GetMatchCardsAsync_Cup_ReturnsMatchCards()
         {
-            IModel model = _api;
-            var matches = await model.GetMatchCardsAsync("613", "Richardson Cup");
+            _handler.Map("match", "Richardson Cup", "match-cup.json");
+
+            var matches = await _api.GetMatchCardsAsync("613", "Richardson Cup");
 
             Assert.IsNotNull(matches);
             Assert.AreEqual(2, matches.Length);
@@ -264,8 +272,11 @@ namespace Ojb500.EcfLms.Test
         [TestMethod]
         public async Task Competition_Cup_EventsAndMatchesWork_TableThrows()
         {
-            IModel model = _api;
-            var org = model.GetOrganisation(613);
+            _handler.Map("event", "Richardson Cup", "event-cup.json");
+            _handler.Map("match", "Richardson Cup", "match-cup.json");
+            _handler.Map("table", "Richardson Cup", "table-cup.json");
+
+            var org = _api.GetOrganisation(613);
             var cup = org.GetCompetition("Richardson Cup");
 
             var events = await cup.GetEventsAsync();
@@ -277,5 +288,183 @@ namespace Ojb500.EcfLms.Test
             await Assert.ThrowsExceptionAsync<InvalidOperationException>(
                 () => cup.GetTableAsync());
         }
+
+        // --- Crosstable tests ---
+
+        [TestMethod]
+        public async Task GetCrosstableAsync_ReturnsCrosstable()
+        {
+            _handler.Map("standings", "standings.json");
+
+            var crosstable = await _api.GetCrosstableAsync("613", "Sheffield Individual Championships");
+
+            Assert.IsNotNull(crosstable);
+            Assert.AreEqual("Sheffield Individual Championships", crosstable.Title);
+            Assert.AreEqual(34, crosstable.Entries.Length);
+            Assert.AreEqual(4, crosstable.Rounds.Length);
+            Assert.AreEqual("Round 1", crosstable.Rounds[0]);
+            Assert.AreEqual("Round 4", crosstable.Rounds[3]);
+        }
+
+        [TestMethod]
+        public async Task GetCrosstableAsync_ParsesRoundResults()
+        {
+            _handler.Map("standings", "standings.json");
+
+            var crosstable = await _api.GetCrosstableAsync("613", "Sheffield Individual Championships");
+
+            // Entry 0: "Alexandr Klimchik", "1 (b22)", "1 (w13)", "1 (b12)", "- (  )"
+            var entry = crosstable.Entries[0];
+            Assert.AreEqual(1, entry.SeedNumber);
+            Assert.AreEqual("Alexandr Klimchik", entry.Name);
+
+            // Round 1: "1 (b22)" - win with black against 22
+            Assert.AreEqual(2, entry.Results[0].Score.PointsX2); // 1 point
+            Assert.IsFalse(entry.Results[0].IsWhite);
+            Assert.AreEqual(22, entry.Results[0].OpponentNumber);
+            Assert.IsTrue(entry.Results[0].IsPlayed);
+
+            // Round 2: "1 (w13)" - win with white against 13
+            Assert.AreEqual(2, entry.Results[1].Score.PointsX2);
+            Assert.IsTrue(entry.Results[1].IsWhite);
+            Assert.AreEqual(13, entry.Results[1].OpponentNumber);
+        }
+
+        [TestMethod]
+        public async Task GetCrosstableAsync_ParsesSpecialResults()
+        {
+            _handler.Map("standings", "standings.json");
+
+            var crosstable = await _api.GetCrosstableAsync("613", "Sheffield Individual Championships");
+
+            // Entry 16 (Colin Reid): "1 ( def)", "0 (b2)", " ½ ( HPB)", "- (  )"
+            var entry = crosstable.Entries[16];
+            Assert.AreEqual("Colin Reid", entry.Name);
+
+            // Round 1: default win
+            Assert.IsTrue(entry.Results[0].IsDefault);
+            Assert.IsTrue(entry.Results[0].IsPlayed);
+            Assert.AreEqual(2, entry.Results[0].Score.PointsX2);
+
+            // Round 3: half point bye
+            Assert.IsTrue(entry.Results[2].IsHalfPointBye);
+            Assert.IsTrue(entry.Results[2].IsPlayed);
+            Assert.AreEqual(1, entry.Results[2].Score.PointsX2);
+
+            // Round 4: unplayed
+            Assert.IsFalse(entry.Results[3].IsPlayed);
+        }
+
+        [TestMethod]
+        public async Task GetCrosstableAsync_ParsesTotal()
+        {
+            _handler.Map("standings", "standings.json");
+
+            var crosstable = await _api.GetCrosstableAsync("613", "Sheffield Individual Championships");
+
+            // Entry 0: total 3 (integer)
+            Assert.AreEqual(6, crosstable.Entries[0].Total.PointsX2);
+
+            // Entry 3 (Jim Davis): total "2½"
+            Assert.AreEqual(5, crosstable.Entries[3].Total.PointsX2);
+
+            // Entry 29 (Craig Fores): total " ½"
+            Assert.AreEqual(1, crosstable.Entries[29].Total.PointsX2);
+        }
+
+        [TestMethod]
+        public async Task GetCrosstableAsync_League_ThrowsMeaningfulException()
+        {
+            _handler.Map("standings", "Div 1 - Davy Trophy", "standings-error.json");
+
+
+            var ex = await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => _api.GetCrosstableAsync("613", "Div 1 - Davy Trophy"));
+
+            StringAssert.Contains(ex.Message, "ERROR:");
+            StringAssert.Contains(ex.Message, "team event");
+        }
+
+        [TestMethod]
+        public async Task GetCrosstableAsync_Cup_ThrowsMeaningfulException()
+        {
+            _handler.Map("standings", "Richardson Cup", "standings-error.json");
+
+
+            var ex = await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => _api.GetCrosstableAsync("613", "Richardson Cup"));
+
+            StringAssert.Contains(ex.Message, "ERROR:");
+            StringAssert.Contains(ex.Message, "team event");
+        }
+
+        [TestMethod]
+        public async Task GetCrosstableAsync_Nonexistent_ThrowsMeaningfulException()
+        {
+            _handler.Map("standings", "Nonexistent", "error.json");
+
+
+            var ex = await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => _api.GetCrosstableAsync("613", "Nonexistent"));
+
+            StringAssert.Contains(ex.Message, "ERROR:");
+        }
+
+        // --- Nonexistent competition error tests ---
+
+        [TestMethod]
+        public async Task GetTableAsync_Nonexistent_ThrowsMeaningfulException()
+        {
+            _handler.Map("table", "Nonexistent", "error.json");
+
+
+            var ex = await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => _api.GetTableAsync("613", "Nonexistent"));
+
+            StringAssert.Contains(ex.Message, "ERROR:");
+        }
+
+        [TestMethod]
+        public async Task GetEventsAsync_Nonexistent_ThrowsMeaningfulException()
+        {
+            _handler.Map("event", "Nonexistent", "error.json");
+
+
+            var ex = await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => _api.GetEventsAsync("613", "Nonexistent"));
+
+            StringAssert.Contains(ex.Message, "ERROR:");
+        }
+
+        [TestMethod]
+        public async Task GetMatchCardsAsync_Nonexistent_ThrowsMeaningfulException()
+        {
+            _handler.Map("match", "Nonexistent", "error.json");
+
+
+            var ex = await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+                () => _api.GetMatchCardsAsync("613", "Nonexistent"));
+
+            StringAssert.Contains(ex.Message, "ERROR:");
+        }
+
+        [TestMethod]
+        public async Task Competition_GetCrosstableAsync()
+        {
+            _handler.Map("standings", "standings.json");
+
+            var org = _api.GetOrganisation(613);
+            var comp = org.GetCompetition("Sheffield Individual Championships");
+
+            var ct1 = await comp.GetCrosstableAsync();
+            Assert.IsNotNull(ct1);
+            Assert.AreEqual(comp, ct1.Competition);
+            Assert.AreEqual("Sheffield Individual Championships", ct1.Name);
+
+            // Verify caching
+            var ct2 = await comp.GetCrosstableAsync();
+            Assert.AreSame(ct1, ct2);
+        }
     }
 }
+
