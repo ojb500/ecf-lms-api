@@ -19,7 +19,7 @@ steps:
   displayName: 'dotnet build'
   inputs:
     command: 'build'
-    projects: '$(projectPath)'
+    projects: 'Lms.sln'
     ${{ if parameters.isRelease }}:
       arguments: '--configuration $(buildConfiguration)'
     ${{ else }}:
@@ -30,7 +30,7 @@ steps:
   inputs:
     command: 'test'
     projects: 'Ojb500.EcfLms.Test/Ojb500.EcfLms.Test.csproj'
-    arguments: '--configuration $(buildConfiguration)'
+    arguments: '--configuration $(buildConfiguration) --no-build'
 
 - task: NuGetCommand@2
   displayName: 'nuget push'
