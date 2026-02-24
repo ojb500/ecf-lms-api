@@ -30,7 +30,7 @@ steps:
   inputs:
     command: 'test'
     projects: 'Ojb500.EcfLms.Test/Ojb500.EcfLms.Test.csproj'
-    arguments: '--configuration $(buildConfiguration) --no-build'
+    arguments: '--configuration $(buildConfiguration)'
 
 - task: NuGetCommand@2
   displayName: 'nuget push'
