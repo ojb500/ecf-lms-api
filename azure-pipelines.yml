@@ -1,45 +1,41 @@
-# ASP.NET
-# Build and test ASP.NET projects.
-# Add steps that publish symbols, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/apps/aspnet/build-aspnet-4
-
 trigger:
 - master
 
 pool:
   vmImage: 'windows-latest'
 
+parameters:
+- name: isRelease
+  displayName: 'Release build (no prerelease suffix)'
+  type: boolean
+  default: false
+
 variables:
   buildConfiguration: 'Release'
+  projectPath: 'LmsApi/Ojb500.EcfLms.csproj'
 
 steps:
 - task: DotNetCoreCLI@2
   displayName: 'dotnet build'
   inputs:
     command: 'build'
-    arguments: '--configuration $(buildConfiguration)'
-    projects: 'LmsApi/Ojb500.EcfLms.csproj'
+    projects: '$(projectPath)'
+    ${{ if parameters.isRelease }}:
+      arguments: '--configuration $(buildConfiguration)'
+    ${{ else }}:
+      arguments: '--configuration $(buildConfiguration) /p:VersionSuffix=pre.$(Build.BuildId)'
 
 - task: DotNetCoreCLI@2
-  displayName: "dotnet pack"
+  displayName: 'dotnet test'
   inputs:
-    command: 'pack'
-    packagesToPack: 'LmsApi/Ojb500.EcfLms.csproj'
-    nobuild: true
-    versioningScheme: 'byPrereleaseNumber'
-    majorVersion: '0'
-    minorVersion: '1'
-    patchVersion: '0'
+    command: 'test'
+    projects: 'Ojb500.EcfLms.Test/Ojb500.EcfLms.Test.csproj'
+    arguments: '--configuration $(buildConfiguration) --no-build'
 
-# The last task is a nuget command, nuget push
-# This will push any .nupkg files to the 'TestFeed' artifact feed
-# allowPackageConflicts allows us to build the same version and not throw an error when trying to push
-# instead it just ingores the latest package unless the version changes
 - task: NuGetCommand@2
   displayName: 'nuget push'
   inputs:
     command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'internal'
-    publishVstsFeed: 'ddef5be5-243d-474f-91c2-620d2c1fd3fb/4b8d3dd9-5e47-486e-a8c6-324ad585463f'
-    allowPackageConflicts: true
+    packagesToPush: '$(Build.SourcesDirectory)/**/bin/$(buildConfiguration)/*.nupkg'
+    nuGetFeedType: 'external'
+    publishFeedCredentials: 'NuGetOrg'
