@@ -9,11 +9,11 @@ Package: `Ojb500.EcfLms`
 using Ojb500.EcfLms;
 
 // Connect to the ECF LMS for your organisation
-var org = Api.Default.GetOrganisation(28757); // e.g. Sheffield & District Chess Association
+var org = Api.Default.GetOrganisation(613); // e.g. Sheffield & District Chess Association
 
 // --- League table ---
-var div1 = org.GetCompetition(" Division 1 - Davy Trophy");
-var table = div1.GetTable();
+var div1 = org.GetCompetition("Div 1 - Davy Trophy");
+var table = await div1.GetTableAsync();
 
 foreach (var pos in table)
 {
@@ -23,20 +23,20 @@ foreach (var pos in table)
 }
 
 // --- Summarised table for your club (top + neighbourhood) ---
-var summary = table.SummarizeFor("Rotherham", maxRows: 5);
+var summary = table.SummarizeFor("Ecclesall", maxRows: 5);
 foreach (var pos in summary)
 {
     Console.WriteLine($"{pos.Position}. {pos.Entry.Team.Name} ({pos.Entry.Pts} pts)");
 }
 
 // --- Fixtures and results ---
-var events = div1.GetEvents();
+var events = await div1.GetEventsAsync();
 var upcoming = events.Where(e => e.DateTime > DateTime.Now).Take(5);
 var results = events.Where(e => e.DateTime <= DateTime.Now && !e.Result.IsEmpty)
     .OrderByDescending(e => e.DateTime).Take(5);
 
 // --- Detailed match cards with individual board pairings ---
-foreach (var match in div1.GetMatches().Take(3))
+foreach (var match in (await div1.GetMatchesAsync()).Take(3))
 {
     Console.WriteLine($"\n{match.Left} v {match.Right}");
     foreach (var p in match.Pairings)
@@ -44,13 +44,13 @@ foreach (var match in div1.GetMatches().Take(3))
         var colour = p.FirstPlayerWhite ? "W" : "B";
         Console.WriteLine($"  Bd {p.Board} ({colour}): " +
                           $"{p.FirstPlayer.FamilyName} ({p.FirstPlayer.Rating.Primary}) " +
-                          $"{p.Result.Result} " +
+                          $"{p.Result} " +
                           $"{p.SecondPlayer.FamilyName} ({p.SecondPlayer.Rating.Primary})");
     }
 }
 
 // --- All fixtures for a specific club (by club code) ---
-var clubFixtures = org.GetClubEvents("ROT");
+var clubFixtures = await org.GetClubEventsAsync("8YSR");
 foreach (var comp in clubFixtures)
 {
     Console.WriteLine($"\n{comp.Title}:");
@@ -61,7 +61,7 @@ foreach (var comp in clubFixtures)
 }
 
 // --- Browse seasons and competitions ---
-var seasons = org.GetSeasonsWithEvents();
+var seasons = await org.GetSeasonsWithEventsAsync();
 foreach (var (id, season) in seasons)
 {
     Console.WriteLine($"\n{season.Name}:");

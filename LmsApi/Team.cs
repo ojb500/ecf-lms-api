@@ -20,7 +20,7 @@ namespace Ojb500.EcfLms
             return new Team(name, string.IsNullOrEmpty(url) ? null : url);
         }
 
-        public override string ToString() => Abbreviated;
+        public override string ToString() => Name;
 
         /// <summary>A shortened version of the team name for display.</summary>
         [JsonIgnore]
