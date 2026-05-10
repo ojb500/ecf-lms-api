@@ -19,6 +19,15 @@ namespace Ojb500.EcfLms
     /// </summary>
     public class Api : IModel
     {
+        private static readonly string DefaultUserAgent = BuildDefaultUserAgent();
+
+        private static string BuildDefaultUserAgent()
+        {
+            var asm = typeof(Api).Assembly;
+            var version = asm.GetName().Version?.ToString(3) ?? "0.0.0";
+            return $"Ojb500.EcfLms/{version} (.NET; +https://github.com/ojb500)";
+        }
+
         /// <summary>Shared client pointing at the production ECF LMS endpoint.</summary>
         public static readonly Api Default = new Api();
 
@@ -41,6 +50,7 @@ namespace Ojb500.EcfLms
             };
             _hc.DefaultRequestHeaders.Accept.Clear();
             _hc.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            _hc.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
         }
 
 
@@ -54,7 +64,7 @@ namespace Ojb500.EcfLms
 					name = name
 				}), ct).ConfigureAwait(false);
 
-            result.EnsureSuccessStatusCode();
+            await EnsureSuccessOrDiagnoseAsync(result, $"POST {file} (org={org}, name='{name}')", ct).ConfigureAwait(false);
 
             return await result.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
         }
@@ -65,7 +75,7 @@ namespace Ojb500.EcfLms
             var result = await _hc.PostAsync(file, JsonContent.Create(
                 new { org = org }), ct).ConfigureAwait(false);
 
-            result.EnsureSuccessStatusCode();
+            await EnsureSuccessOrDiagnoseAsync(result, $"POST {file} (org={org})", ct).ConfigureAwait(false);
 
             return await result.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
         }
@@ -82,8 +92,41 @@ namespace Ojb500.EcfLms
 
             hc.DefaultRequestHeaders.Accept.Clear();
             hc.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+            hc.DefaultRequestHeaders.UserAgent.ParseAdd(DefaultUserAgent);
 
             return hc;
+        }
+
+        private static async Task EnsureSuccessOrDiagnoseAsync(HttpResponseMessage response, string what, CancellationToken ct)
+        {
+            if (response.IsSuccessStatusCode) return;
+
+            string body = "";
+            try
+            {
+                body = await response.Content.ReadAsStringAsync(ct).ConfigureAwait(false);
+            }
+            catch { /* best effort */ }
+
+            string GetHeader(string name)
+            {
+                if (response.Headers.TryGetValues(name, out var vals)) return string.Join(", ", vals);
+                if (response.Content.Headers.TryGetValues(name, out var cvals)) return string.Join(", ", cvals);
+                return "";
+            }
+
+            var server = GetHeader("Server");
+            var cfRay = GetHeader("cf-ray");
+            var cfMitigated = GetHeader("cf-mitigated");
+            var contentType = response.Content.Headers.ContentType?.ToString() ?? "";
+            var snippet = body.Length > 500 ? body.Substring(0, 500) + "...(truncated)" : body;
+
+            var msg = $"{what} -> {(int)response.StatusCode} {response.ReasonPhrase}. " +
+                      $"Server='{server}' cf-ray='{cfRay}' cf-mitigated='{cfMitigated}' Content-Type='{contentType}'. " +
+                      $"Body: {snippet}";
+
+            Trace.WriteLine(msg);
+            throw new HttpRequestException(msg, null, response.StatusCode);
         }
         private T Deserialise<T>(Stream s)
         {
@@ -217,7 +260,7 @@ namespace Ojb500.EcfLms
                 Trace.WriteLine($"Requesting standings with org={org}, name='{name}', season='{season}'");
                 var result = await _hc.PostAsync("standings", JsonContent.Create(
                     new { org = org, name = name, season = season }), ct).ConfigureAwait(false);
-                result.EnsureSuccessStatusCode();
+                await EnsureSuccessOrDiagnoseAsync(result, $"POST standings (org={org}, name='{name}', season='{season}')", ct).ConfigureAwait(false);
                 s = await result.Content.ReadAsStreamAsync(ct).ConfigureAwait(false);
             }
             else
